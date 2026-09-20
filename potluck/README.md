@@ -38,14 +38,22 @@ no dependencies) with AI-generated editorial photography in `/assets`.
 
 ## Run it
 
+**Full mode (recommended)** — static app + API with shared live inventory:
+
 ```bash
 cd potluck
-python3 -m http.server 8080
-# open http://localhost:8080
+node server.js          # serves on 0.0.0.0:8080, no npm install needed
+# open http://localhost:8080 in two browsers — bookings sync across both
 ```
 
-Any static file server works. State (bookings, waitlist, seats) persists in
-`localStorage`; clear it to reset the demo.
+`server.js` is zero-dependency (no packages): it serves the static files and a
+small JSON API (`/api/state`, `/api/book` with atomic claims + 409 conflicts,
+`/api/cancel`, `/api/publish`, `/api/waitlist`, `/api/track`). State persists
+to `data.json` (gitignored); delete it to reset the world.
+
+**Offline demo mode** — any static file server also works
+(`python3 -m http.server 8080`): the app detects there's no API and falls back
+to a fully local `localStorage` world.
 
 ## Stack
 

@@ -61,6 +61,9 @@ nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:26px;
 .ticket-pill.show{display:block}
 .member-chip{display:none;background:linear-gradient(90deg,var(--gold),var(--ember));color:#fff;border-radius:999px;padding:9px 16px;font-size:11.5px;font-weight:700;letter-spacing:.1em;cursor:pointer;border:none;box-shadow:0 4px 14px rgba(196,80,43,.35)}
 .member-chip.show{display:inline-flex;align-items:center;gap:6px}
+.live-chip{display:none;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--olive);border:1px solid rgba(95,107,66,.45);border-radius:999px;padding:8px 13px;background:rgba(95,107,66,.1)}
+.live-chip.show{display:inline-flex}
+.live-chip .ld{width:7px;height:7px;border-radius:50%;background:var(--olive);animation:pulse 1.6s infinite}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:none;border-radius:999px;
   padding:15px 30px;font-size:15px;font-weight:600;transition:transform .15s, background .2s, color .2s;cursor:pointer;text-align:center}
 .btn:active{transform:scale(.97)}
@@ -354,6 +357,7 @@ footer{background:var(--dark);color:var(--bone);padding:80px 0 40px}
   </div>
   <div class="nav-right">
     <button class="member-chip" id="memberChip" onclick="go('#/membership')">✦ FIRST CHAIR</button>
+    <span class="live-chip" id="liveChip" title="Inventory syncs live across every open browser"><span class="ld"></span>LIVE</span>
     <span class="city-chip">AUSTIN, TX</span>
     <button class="ticket-pill" id="ticketPill" onclick="go('#/tickets')">🎟 My seats</button>
     <button class="btn btn-ink" style="padding:11px 22px;font-size:13.5px" onclick="go('#/host')">Become a host</button>
@@ -495,6 +499,61 @@ let follows = LS.get('pk_follows', []);
 let venueReqs = LS.get('pk_venue', []);
 let filter = 'all';
 
+/* ---- remote sync (optional zero-dep Node backend: server.js) ----
+   When served by server.js the demo becomes multiplayer: seat claims are
+   atomic server-side and every open browser sees the same inventory.
+   Without it, everything below degrades to the localStorage world. */
+const REMOTE = { on:false };
+let remoteTaken = {};
+let waitlistCounts = {};
+function hydrate(s){
+  if(s.seats) seatsMap = Object.assign({}, s.seats);
+  remoteTaken = s.taken || {};
+  waitlistCounts = s.waitlistCounts || {};
+  (s.customEvents||[]).forEach(e=>{ if(!EVENTS.find(x=>x.id===e.id)){ EVENTS.push(e); if(!customEvents.find(x=>x.id===e.id)) customEvents.push(e); } });
+}
+function timeout(ms){ return new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms)) }
+async function bootRemote(){
+  try{
+    const r = await Promise.race([fetch('/api/state'), timeout(1000)]);
+    if(!r.ok) throw new Error('bad status');
+    const s = await r.json();
+    hydrate(s);
+    REMOTE.on = true;
+    const chip = document.getElementById('liveChip'); if(chip) chip.classList.add('show');
+    render(false);
+    setInterval(pollRemote, 12000);
+  }catch(e){ /* offline demo mode: localStorage world */ }
+}
+async function pollRemote(){
+  const rootEl = document.getElementById('modalRoot');
+  if(rootEl && rootEl.classList.contains('open')) return;
+  try{
+    const r = await fetch('/api/state'); if(!r.ok) return;
+    const s = await r.json();
+    let hot = null;
+    Object.keys(s.seats||{}).forEach(id=>{
+      const before = seatsMap[id];
+      const after = s.seats[id];
+      if(before!=null && after<before) hot = {id, after};
+    });
+    hydrate(s);
+    render(false);
+    if(hot && !document.hidden){
+      const e = ev(hot.id);
+      if(e) toast('Someone just claimed seats at '+e.title+' — '+hot.after+' left. Move like you mean it.');
+    }
+  }catch(e){}
+}
+function api(path, body){
+  if(!REMOTE.on) return Promise.resolve(null);
+  return fetch(path, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body||{})})
+    .then(r=> r.status===409 ? r.json().then(j=>({conflict:j})) : (r.ok? r.json() : null))
+    .catch(()=>null);
+}
+function track(type, payload){ if(REMOTE.on) api('/api/track', {type, payload: payload||null}); }
+function waitlistCount(e){ return REMOTE.on ? (waitlistCounts[e.id]||0) : ((Number(e.wc)||0)+waitlist.filter(w=>w.id===e.id).length); }
+
 function ev(id){ return EVENTS.find(e=>e.id===id) }
 function seatsLeft(e){ return seatsMap[e.id]!==undefined ? seatsMap[e.id] : e.left }
 function saveSeats(){ LS.set('pk_seats', seatsMap) }
@@ -504,7 +563,7 @@ function isSubbed(){ return !!LS.get('pk_sub', null) }
 function isNotified(id){ return notifyList.some(n=>n.id===id) }
 function fmtLeft(e){
   const l=seatsLeft(e);
-  if(l===0 && !e.locked) return 'Waitlist · '+((Number(e.wc)||0)+waitlist.filter(w=>w.id===e.id).length)+' in line';
+  if(l===0 && !e.locked) return 'Waitlist · '+waitlistCount(e)+' in line';
   if(e.locked){
     if(l===0) return 'Claimed early by members';
     if(l<e.total) return 'Early access: '+l+' of '+e.total+' left';
@@ -515,6 +574,7 @@ function fmtLeft(e){
 function hashSeed(s){ let h=2166136261; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619) } return h>>>0 }
 function mul32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296 } }
 function takenSeats(e){
+  if(REMOTE.on && remoteTaken[e.id]) return new Set(remoteTaken[e.id]);
   const sold = e.total - seatsLeft(e);
   const rnd = mul32(hashSeed(e.id));
   const set = new Set();
@@ -542,6 +602,7 @@ function toggleFollow(av, name){
   if(i>=0){ follows.splice(i,1); toast("Unfollowed "+name+". The table will miss you."); }
   else { follows.push(av); toast("Following "+name+" — you'll hear about new tables first."); }
   LS.set('pk_follows', follows);
+  track('follow', {av, following: follows.includes(av)});
   render(false);
 }
 function inviteCredit(){
@@ -806,14 +867,25 @@ function confirmCancel(code){
       <button class="btn btn-line btn-block" onclick="closeModal()">Keep my seats</button>
     </div>`);
 }
-function doCancel(code){
-  const i = bookings.findIndex(x=>x.code===code); if(i<0) return;
-  const b = bookings[i]; const e = ev(b.eventId);
-  bookings.splice(i,1); LS.set('pk_bookings', bookings);
+function localCancelMath(b, e){
+  let promoted = false;
   if(e){ seatsMap[e.id] = seatsLeft(e) + b.qty; saveSeats(); }
   const wi = waitlist.findIndex(w=>w.id===b.eventId);
-  let promoted = false;
   if(wi>=0){ waitlist.splice(wi,1); LS.set('pk_waitlist', waitlist); promoted = true; }
+  return promoted;
+}
+async function doCancel(code){
+  const i = bookings.findIndex(x=>x.code===code); if(i<0) return;
+  const b = bookings[i]; const e = ev(b.eventId);
+  let promoted = false;
+  if(REMOTE.on){
+    const res = await api('/api/cancel', {code});
+    if(res && res.ok){
+      promoted = !!res.promoted;
+      if(e){ seatsMap[e.id]=res.left; if(res.taken) remoteTaken[e.id]=res.taken; saveSeats(); }
+    } else promoted = localCancelMath(b, e);
+  } else promoted = localCancelMath(b, e);
+  bookings.splice(i,1); LS.set('pk_bookings', bookings);
   updateTicketPill();
   closeModal();
   toast(promoted ? 'Seats returned — they just rolled to #1 on the waitlist. $'+b.total+' refund on its way.' : 'Seats returned to the table. $'+b.total+' refund on its way.');
@@ -893,6 +965,7 @@ function joinChair(evnt, plan){
   setTimeout(()=>{
     member = { since: Date.now(), plan };
     LS.set('pk_member', member);
+    track('member-join', {plan});
     updateMemberUI();
     openModal(`
       <button class="modal-x" onclick="closeModal()">✕</button>
@@ -983,6 +1056,7 @@ function vDash(){
     {n:'Ted + Joanna', s:2, d:'anniversary — candle on the dessert?'},
   ];
   bookings.filter(b=>d.danaEvents.some(e=>e.id===b.eventId)).forEach(b=>guests.unshift({n:b.name+' (you)', s:b.qty, d:b.diet||'—'}));
+  window.__guests = guests;
   const dateOpts = upcomingDates().map((dd,i)=>`<option value="${i}">${dd.label}</option>`).join('');
   const catOpts = CATS.filter(c=>c[0]!=='all').map(c=>`<option value="${c[0]}">${c[1]}</option>`).join('');
   const imgs = ASSETS.map((a,i)=>`<label><input type="radio" name="pimg" value="${a}" ${i===0?'checked':''}><span class="th"><img src="${a}" alt="Table photo option ${i+1}" loading="lazy"></span></label>`).join('');
@@ -1038,6 +1112,7 @@ function vDash(){
           <h4>Friday's guest list</h4>
           <div class="glist">${guests.map(g=>`<div class="grow"><span><b>${g.n}</b> · ${g.s} seat${g.s>1?'s':''}</span><span class="diet">${g.d}</span></div>`).join('')}</div>
           <div style="font-size:12px;color:var(--ink2);margin-top:14px">Dietary notes land here straight from booking. One tap exports to your prep sheet.</div>
+          <div style="margin-top:14px"><button class="btn btn-line" style="padding:9px 16px;font-size:12px" onclick="exportGuests()">Export guest list (.csv)</button></div>
         </div>
       </div>
       <div>
@@ -1073,6 +1148,7 @@ function vDash(){
 }
 function requestVenue(id, name){
   venueReqs.push(id); LS.set('pk_venue', venueReqs);
+  track('venue-request', {id, name});
   toast('Request sent to '+name+' — venues usually reply within a day.');
   render(false);
 }
@@ -1097,6 +1173,18 @@ function publishTable(evnt){
     note:'Just published to the Sunday drop · deposits on every seat · payout Friday',
     quotes:[]
   };
+  if(REMOTE.on){
+    toast("Publishing…");
+    api('/api/publish', {event:custom}).then(res=>{
+      const ne = (res && res.event) ? res.event : custom;
+      if(!EVENTS.find(x=>x.id===ne.id)) EVENTS.push(ne);
+      if(!customEvents.find(x=>x.id===ne.id)) customEvents.push(ne);
+      LS.set('pk_custom_events', customEvents);
+      toast("🔥 "+ne.title+" is live — it's in the Sunday drop and bookable right now.");
+      go('#/event/'+ne.id);
+    });
+    return false;
+  }
   EVENTS.push(custom);
   customEvents.push(custom); LS.set('pk_custom_events', customEvents);
   toast("🔥 "+custom.title+" is live — it's in the Sunday drop and bookable right now.");
@@ -1232,9 +1320,26 @@ function bkPay(evnt){
   const e = ev(bk.id);
   const t = bkTotals(e);
   openModal(`<div class="processing"><div class="spinner"></div><div class="serif" style="font-size:21px;font-style:italic">Plating your seat${t.qty>1?'s':''}…</div></div>`);
-  setTimeout(()=>{
-    seatsMap[e.id] = Math.max(0, seatsLeft(e) - t.qty); saveSeats();
-    const code = 'PK-'+Math.random().toString(36).slice(2,6).toUpperCase();
+  setTimeout(async ()=>{
+    let code = null;
+    if(REMOTE.on){
+      const res = await api('/api/book', {eventId:e.id, seats:[...bk.seats], name:bk.name, email:bk.email, diet:bk.diet});
+      if(res && res.conflict){
+        seatsMap[e.id]=res.conflict.left; remoteTaken[e.id]=res.conflict.taken; saveSeats();
+        const survivors = bk.seats.filter(s=>!res.conflict.taken.includes(s));
+        const lost = bk.seats.length - survivors.length;
+        bk.seats = survivors;
+        toast(lost ? (bk.seats.length ? 'Race! '+lost+' seat'+(lost>1?'s were':' was')+' claimed as you booked — kept your other pick'+(bk.seats.length>1?'s':'')+'.' : 'Too slow — those seats were just claimed. Grab fresh ones.') : 'Availability just changed — re-check the table.');
+        renderBkStep1();
+        return;
+      }
+      if(res && res.code){ code = res.code; seatsMap[e.id]=res.left; if(res.taken) remoteTaken[e.id]=res.taken; }
+    }
+    if(!code){
+      code = 'PK-'+Math.random().toString(36).slice(2,6).toUpperCase();
+      seatsMap[e.id] = Math.max(0, seatsLeft(e) - t.qty);
+    }
+    saveSeats();
     credit = Math.max(0, credit - t.disc); LS.set('pk_credit', credit);
     bookings.push({code, eventId:e.id, qty:t.qty, seats:[...bk.seats], name:bk.name, email:bk.email, diet:bk.diet, total:t.total, at:Date.now(), feeWaived:(member?3*t.qty:0)});
     LS.set('pk_bookings', bookings);
@@ -1279,6 +1384,9 @@ function openWaitlist(id){
 function joinWaitlist(evnt, id, pos){
   evnt.preventDefault();
   waitlist.push({id, at: Date.now()}); LS.set('pk_waitlist', waitlist);
+  api('/api/waitlist', {eventId:id}).then(res=>{
+    if(res && res.pos) toast("You're #"+res.pos+" in line (server-confirmed). We move fast when a seat opens.");
+  });
   toast(`You're #${pos} in line. We move fast when a seat opens.`);
   closeModal();
   return false;
@@ -1298,12 +1406,23 @@ function openNotify(id){
 function doNotify(evnt, id){
   evnt.preventDefault();
   notifyList.push({id, at: Date.now()}); LS.set('pk_notify', notifyList);
+  track('notify', {id});
   toast("Alarm set. Sunday 5:55pm — don't blink.");
   closeModal();
   return false;
 }
 
-/* ============================== ICS ============================== */
+/* ============================== EXPORT / ICS ============================== */
+function exportGuests(){
+  const g = window.__guests || [];
+  const rows = [['name','seats','dietary']].concat(g.map(x=>[x.n,x.s,x.d]));
+  const csv = rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf8,'+encodeURIComponent(csv);
+  a.download = 'potluck-guest-list.csv';
+  a.click();
+  toast('Guest list exported — prep sheet, sorted.');
+}
 function downloadICS(id, code){
   const e = ev(id);
   const pad = n=>String(n).padStart(2,'0');
@@ -1329,7 +1448,9 @@ function downloadICS(id, code){
 function subscribe(evnt){
   evnt.preventDefault();
   const inp = evnt.target.querySelector('input');
-  LS.set('pk_sub', {email: inp.value, at: Date.now()});
+  const em = inp.value;
+  LS.set('pk_sub', {email: em, at: Date.now()});
+  track('subscribe', {email: em});
   inp.value='';
   toast("You're on the list. Sunday 6pm — set an alarm, the ramen goes in four minutes.");
   if((location.hash||'#/')==='#/') render(false);
@@ -1338,6 +1459,7 @@ function subscribe(evnt){
 function hostApply(evnt){
   evnt.preventDefault();
   const apps = LS.get('pk_host', []); apps.push({at: Date.now()}); LS.set('pk_host', apps);
+  track('host-apply', {});
   document.getElementById('hostFormCard').innerHTML = `
     <div class="form-ok">
       <div class="wm">🔥</div>
@@ -1387,9 +1509,8 @@ function render(scroll=true){
   document.querySelectorAll('.reveal:not(.in)').forEach(el=>io.observe(el));
 }
 window.addEventListener('hashchange', ()=>render());
-render();
-updateTicketPill();
-updateMemberUI();
+function init(){ render(); updateTicketPill(); updateMemberUI(); bootRemote(); }
+init();
 </script>
 </body>
 </html>
