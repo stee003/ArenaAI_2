@@ -60,3 +60,25 @@ to a fully local `localStorage` world.
 Hand-crafted HTML/CSS/JS in a single `index.html`. Fraunces + Space Grotesk.
 Photography in `assets/` is AI-generated for this demo. Payments shown are
 simulated — wire to Stripe Connect for the real thing.
+
+## v5 — accounts & event-day ops
+
+Same zero-dependency server, new in addition to v4:
+
+- **Sign in without passwords**: `POST /api/auth/request` issues a one-time code
+  (the demo build returns it in the response as `devCode` since it can't send
+  email — that's the "demo inbox"); `POST /api/auth/verify` trades it for a
+  `tk_…` session token. Client falls back to offline code `482916`.
+- **Your seats, synced**: `GET /api/me?token=` returns the account's bookings;
+  bookings made while signed in (`authToken` on `/api/book`) follow you across
+  browsers and show as "✓ synced".
+- **Day-of host tools**: `POST /api/checkin {code}` validates tickets at the
+  door — `ok` / `already` (duplicate scan, timestamped) / 404 (fake). The
+  dashboard also has a "Message your people" blast composer with simulated
+  delivery/open/reply stats — the owned-channel story, no Instagram required.
+- **Ticket visuals**: deterministic QR-style pattern per booking code (with
+  finder squares), plus a confirmation-email preview styled like the real
+  address-reveal email a real product would send.
+
+Everything degrades gracefully to the pure-localStorage demo when the API is
+unreachable.
