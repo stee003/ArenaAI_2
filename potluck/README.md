@@ -82,3 +82,30 @@ Same zero-dependency server, new in addition to v4:
 
 Everything degrades gracefully to the pure-localStorage demo when the API is
 unreachable.
+
+## v6 — the marketplace loop (pricing, the waitlist machine, earned reputation)
+
+- **Server-authoritative dynamic pricing**: `/api/state` now serves live
+  prices. Early-bird tiers (e.g. hotpot: first 6 seats at $39, then $45)
+  flip automatically as seats sell — every browser toasts the flip. The
+  server reads the tier *before* claiming seats and returns the unit price
+  charged on every booking; the client can only display, never argue.
+- **The waitlist machine**: freed seats no longer sit there. Cancel a
+  booking and the first human in line gets a 10-minute expiring claim
+  window (`/api/waitlist/claim` after the offer shows up in `/api/me`).
+  Let it lapse and it rolls to the next person. Polling clients drive the
+  sweep, so the machine moves as long as anyone anywhere has the app open.
+  Offers are email-bound — nobody can steal your spot.
+- **Field notes, not reviews**: `POST /api/review` only accepts a note when
+  the booking was actually **checked in at the door** and hasn't been
+  reviewed — reputation you can't fake, farm, or drive-by. Ratings roll up
+  per table into `/api/state` (avg, count, latest quotes) and render on
+  cards and event pages as "★ from verified seats".
+- **Live ledger for hosts**: per-host payout aggregates (gross / 12% fee /
+  net-to-Friday, seats & party counts) derived from the real bookings
+  ledger and streamed in every state poll — the dashboard moves when any
+  browser books.
+
+Chapters 1–5's economics, now closing the loop: scarcity prices itself,
+empty chairs resell themselves, and trust compounds one verified note at a
+time.
