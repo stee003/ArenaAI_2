@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Potluck — The best tables aren't in restaurants</title>
+<meta name="description" content="Potluck is where the city's best cooks host ticketed dinners — from backyards, borrowed wine bars, and dead Tuesdays. Fourteen seats. One shared table." />
+<meta property="og:title" content="Potluck — The best tables aren't in restaurants" />
+<meta property="og:description" content="Ticketed suppers hosted by the city's best cooks. Seats are scarce. That's the point." />
+<meta property="og:image" content="assets/hero.jpg" />
+<meta name="theme-color" content="#F4EEE2" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍲</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bone:#F4EEE2; --bone2:#EFE7D6; --paper:#FBF7EC;
+  --ink:#1A140E; --ink2:#4A4136;
+  --ember:#C4502B; --ember-dk:#A33E20;
+  --olive:#5F6B42; --gold:#C0902F;
+  --line:rgba(26,20,14,.14);
+  --dark:#161009;
+  --r:22px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Space Grotesk',system-ui,sans-serif;
+  background:var(--bone); color:var(--ink);
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+body::after{
+  content:""; position:fixed; inset:0; z-index:60; pointer-events:none; opacity:.055;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+::selection{background:var(--ember);color:var(--paper)}
+.serif{font-family:'Fraunces',serif}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--ink2)}
+.eyebrow .em{color:var(--ember)}
+a{color:inherit;text-decoration:none}
+img{display:block;width:100%;height:100%;object-fit:cover}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:15px;width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--ink);outline:none;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--ink)}
+label{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin:14px 0 6px}
+#app>*{animation:pageIn .45s ease both}
+@keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* nav */
+nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:26px;
+  padding:16px 28px;background:rgba(244,238,226,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.logo{font-family:'Fraunces',serif;font-weight:900;font-size:24px;letter-spacing:-.02em;cursor:pointer}
+.logo em{color:var(--ember);font-style:normal}
+.nav-links{display:flex;gap:22px;font-size:14px;font-weight:500}
+.nav-links a{opacity:.75;transition:opacity .2s;cursor:pointer}
+.nav-links a:hover{opacity:1}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.city-chip{font-size:11px;font-weight:600;letter-spacing:.14em;border:1px solid var(--line);border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.5)}
+.ticket-pill{display:none;background:var(--olive);color:#fff;border-radius:999px;padding:9px 16px;font-size:12.5px;font-weight:600;cursor:pointer;border:none}
+.ticket-pill.show{display:block}
+.member-chip{display:none;background:linear-gradient(90deg,var(--gold),var(--ember));color:#fff;border-radius:999px;padding:9px 16px;font-size:11.5px;font-weight:700;letter-spacing:.1em;cursor:pointer;border:none;box-shadow:0 4px 14px rgba(196,80,43,.35)}
+.member-chip.show{display:inline-flex;align-items:center;gap:6px}
+.live-chip{display:none;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--olive);border:1px solid rgba(95,107,66,.45);border-radius:999px;padding:8px 13px;background:rgba(95,107,66,.1)}
+.live-chip.show{display:inline-flex}
+.live-chip .ld{width:7px;height:7px;border-radius:50%;background:var(--olive);animation:pulse 1.6s infinite}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:none;border-radius:999px;
+  padding:15px 30px;font-size:15px;font-weight:600;transition:transform .15s, background .2s, color .2s;cursor:pointer;text-align:center}
+.btn:active{transform:scale(.97)}
+.btn-ink{background:var(--ink);color:var(--paper)}
+.btn-ink:hover{background:#000}
+.btn-ember{background:var(--ember);color:#fff}
+.btn-ember:hover{background:var(--ember-dk)}
+.btn-line{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+.btn-line:hover{background:var(--ink);color:var(--paper)}
+.btn-gold{background:linear-gradient(90deg,var(--gold),var(--ember));color:#fff}
+.btn-block{width:100%}
+.btn[disabled]{opacity:.45;cursor:not-allowed;pointer-events:none}
+@media(max-width:820px){.nav-links{display:none}.city-chip{display:none}}
+
+/* layout */
+.wrap{max-width:1200px;margin:0 auto;padding:0 28px}
+section{padding:90px 0}
+.hair{border-top:1px solid var(--line)}
+h1.display{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(44px,7.4vw,96px);line-height:.98;letter-spacing:-.03em}
+h1.display em{font-style:italic;color:var(--ember)}
+h2.sec{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(32px,4.4vw,54px);line-height:1.04;letter-spacing:-.02em}
+h2.sec em{font-style:italic;color:var(--ember)}
+.lede{font-size:clamp(16px,1.6vw,19px);line-height:1.65;color:var(--ink2);max-width:56ch}
+.sec-head{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:44px;flex-wrap:wrap}
+.num{font-family:'Fraunces',serif;font-style:italic;color:var(--ember);font-size:15px;margin-right:10px}
+
+/* hero */
+.hero{padding:84px 0 60px}
+.count-chip{display:inline-flex;align-items:center;gap:10px;margin-top:26px;font-size:13px;font-weight:600;border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 18px;flex-wrap:wrap}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ember);animation:pulse 1.6s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(196,80,43,.5)}50%{box-shadow:0 0 0 7px rgba(196,80,43,0)}}
+.hero h1{margin:18px 0 22px}
+.hero-form{display:flex;gap:10px;max-width:520px;margin-top:34px}
+.hero-form input{flex:1;padding:16px 20px;border-radius:999px;border:1px solid var(--ink);background:#fff}
+.hero-fine{font-size:12.5px;color:var(--ink2);margin-top:12px}
+.subbed{display:flex;align-items:center;gap:10px;margin-top:34px;background:rgba(95,107,66,.12);border:1px solid rgba(95,107,66,.4);color:var(--olive);border-radius:999px;padding:14px 22px;font-weight:600;font-size:14.5px;max-width:520px}
+.hero-img{position:relative;margin-top:60px;border-radius:var(--r);overflow:hidden;aspect-ratio:21/9;background:#2a2118}
+.tape{position:absolute;font-family:'Fraunces',serif;font-style:italic;font-size:15px;background:var(--paper);border-radius:4px;padding:10px 18px;box-shadow:0 6px 24px rgba(0,0,0,.25);transform:rotate(-3deg)}
+.tape.t1{top:26px;left:26px}
+.tape.t2{bottom:26px;right:26px;transform:rotate(2.4deg);background:var(--ember);color:#fff}
+.tape b{font-style:normal}
+@media(max-width:700px){.hero-img{aspect-ratio:4/3}.hero-form{flex-direction:column}.tape.t1{display:none}}
+
+/* ticker */
+.ticker{background:var(--ink);color:var(--bone);overflow:hidden;padding:15px 0;white-space:nowrap}
+.ticker-inner{display:inline-flex;width:max-content;animation:tick 30s linear infinite}
+.ticker span{font-size:13px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:0 26px}
+.ticker span em{color:var(--ember);font-style:normal;padding-right:26px}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:30px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;transition:transform .25s, box-shadow .25s;cursor:pointer;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-5px);box-shadow:0 24px 50px -22px rgba(26,20,14,.35)}
+.card-img{position:relative;aspect-ratio:4/3;background:#2a2118}
+.price-pill{position:absolute;top:14px;right:14px;background:var(--paper);border-radius:999px;padding:8px 15px;font-size:13px;font-weight:700}
+.badge{position:absolute;top:14px;left:14px;border-radius:999px;padding:8px 14px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.badge.low{background:var(--ember);color:#fff}
+.badge.sold{background:var(--ink);color:var(--paper)}
+.badge.lock{background:var(--gold);color:var(--ink)}
+.badge.open{background:rgba(251,247,236,.92);color:var(--olive)}
+.card-body{padding:22px 22px 24px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card-body h3{font-family:'Fraunces',serif;font-size:23px;font-weight:600;letter-spacing:-.01em}
+.card-body p.sub{font-size:14px;color:var(--ink2);line-height:1.5}
+.host-row{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:600;color:var(--ink2)}
+.av{width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--bone);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.meta-line{font-size:12px;color:var(--ink2);letter-spacing:.1em;text-transform:uppercase}
+.stars{color:var(--gold);font-size:12px;letter-spacing:.12em}
+.seats{margin-top:auto;padding-top:14px}
+.seats .bar{height:3px;background:rgba(26,20,14,.12);border-radius:99px;overflow:hidden}
+.seats .bar i{display:block;height:100%;background:var(--ember);border-radius:99px;transition:width .6s ease}
+.seats .txt{font-size:12px;font-weight:600;margin-top:8px;color:var(--ink2)}
+.seats .txt b{color:var(--ink)}
+
+/* dark band */
+.dark{background:var(--dark);color:var(--bone)}
+.dark .eyebrow{color:rgba(244,238,226,.55)}
+.dark h2.sec{color:var(--bone)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:40px;margin-top:56px}
+.stat .n{font-family:'Fraunces',serif;font-size:clamp(44px,5vw,68px);font-weight:600;color:var(--ember);line-height:1}
+.stat .d{font-size:14.5px;line-height:1.55;color:rgba(244,238,226,.72);margin-top:12px;max-width:26ch}
+.src{font-size:11.5px;color:rgba(244,238,226,.4);margin-top:40px;letter-spacing:.04em}
+
+/* how it works */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:60px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.step{display:flex;gap:20px;padding:26px 0;border-bottom:1px solid var(--line)}
+.step .no{font-family:'Fraunces',serif;font-style:italic;font-size:30px;color:var(--ember);line-height:1;min-width:44px}
+.step h4{font-size:17px;font-weight:700;margin-bottom:6px}
+.step p{font-size:14.5px;line-height:1.55;color:var(--ink2)}
+.col-label{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:8px 16px;margin-bottom:14px;background:#fff}
+
+/* host CTA */
+.hostcta{border-radius:var(--r);overflow:hidden;color:var(--paper);position:relative}
+.hostcta .bgimg{position:absolute;inset:0}
+.hostcta .bgimg::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,rgba(18,12,7,.93) 30%,rgba(18,12,7,.55))}
+.hostcta .inner{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:50px;padding:64px}
+@media(max-width:900px){.hostcta .inner{grid-template-columns:1fr;padding:40px 26px}}
+.calc{background:rgba(251,247,236,.06);border:1px solid rgba(251,247,236,.22);border-radius:18px;padding:30px;backdrop-filter:blur(6px)}
+.calc .row{margin-bottom:22px}
+.calc .rlabel{display:flex;justify-content:space-between;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(251,247,236,.8);margin-bottom:10px}
+.calc input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:99px;background:rgba(251,247,236,.25);outline:none;padding:0;border:none}
+.calc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--ember);cursor:pointer;border:3px solid var(--paper)}
+.calc input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--ember);cursor:pointer;border:3px solid var(--paper)}
+.calc .out{border-top:1px dashed rgba(251,247,236,.3);padding-top:20px;display:flex;justify-content:space-between;align-items:end;gap:14px}
+.calc .big{font-family:'Fraunces',serif;font-size:44px;font-weight:600;color:#fff;line-height:1}
+.calc .per{font-size:12px;color:rgba(251,247,236,.6);margin-top:4px}
+.calc .keep{font-size:12.5px;text-align:right;color:rgba(251,247,236,.75);max-width:16ch;line-height:1.4}
+
+/* manifesto */
+.manifesto p.big{font-family:'Fraunces',serif;font-size:clamp(24px,3.2vw,40px);line-height:1.35;font-weight:400;max-width:24ch;letter-spacing:-.01em}
+.manifesto em{font-style:italic;color:var(--ember)}
+
+/* explore */
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin:26px 0 40px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 18px;font-size:13.5px;font-weight:600;color:var(--ink2);transition:all .2s}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.drop-banner{display:flex;align-items:center;gap:14px;border:1px dashed var(--ink);border-radius:16px;padding:16px 22px;font-size:14px;font-weight:600;background:#fff;flex-wrap:wrap}
+
+/* event page */
+.ev-top{padding:60px 0 0}
+.back{font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer}
+.back:hover{color:var(--ink)}
+.ev-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;margin-top:34px;padding-bottom:90px}
+@media(max-width:900px){.ev-grid{grid-template-columns:1fr}}
+.ev-title{font-family:'Fraunces',serif;font-size:clamp(38px,4.6vw,62px);font-weight:600;line-height:1.02;letter-spacing:-.02em;margin:14px 0 10px}
+.ev-sub{font-size:18px;color:var(--ink2);font-style:italic;font-family:'Fraunces',serif}
+.ev-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:34px 0}
+.ev-meta div{background:var(--paper);padding:18px}
+.ev-meta .k{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2);margin-bottom:6px}
+.ev-meta .v{font-size:15px;font-weight:600}
+.menu{list-style:none}
+.menu li{display:flex;gap:14px;align-items:baseline;padding:13px 0;border-bottom:1px dashed var(--line);font-size:15.5px}
+.menu li::before{content:"—";color:var(--ember);flex-shrink:0}
+.host-card{display:flex;gap:18px;border:1px solid var(--line);background:#fff;border-radius:18px;padding:24px;margin-top:40px}
+.host-card .av{width:52px;height:52px;font-size:17px}
+.host-card h4{font-size:16px}
+.host-card p{font-size:14px;color:var(--ink2);line-height:1.55;margin-top:6px}
+.follow-btn{margin-left:auto;align-self:center;flex-shrink:0}
+.rules{margin-top:34px;border-left:3px solid var(--ember);padding:6px 0 6px 20px;font-size:14px;color:var(--ink2);line-height:1.7}
+.quote{border-left:3px solid var(--gold);padding:4px 0 4px 20px;margin-top:26px}
+.star-btn{background:none;border:none;font-size:27px;cursor:pointer;color:rgba(26,20,14,.2);padding:2px 4px;line-height:1;transition:transform .1s}
+.star-btn:hover{transform:scale(1.15)}
+.star-btn.on{color:var(--ember)}
+.offer-card{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;background:linear-gradient(135deg,#fffaf0,#fff3df);border:2px solid var(--gold);border-radius:18px;padding:18px 22px;margin-bottom:14px;box-shadow:0 10px 34px rgba(192,144,47,.18)}
+.rev-box{margin-top:16px;border-top:1px dashed rgba(26,20,14,.2);padding-top:14px}
+.rev-box input{width:100%;margin:8px 0 10px}
+.review-block{margin-top:30px}
+.rb-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+.rb-avg{font-size:34px;font-weight:800;color:var(--ember);font-family:var(--serif,inherit)}
+.rb-n{font-size:13px;color:var(--ink2)}
+.ledger-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:10px 0;border-bottom:1px dashed rgba(26,20,14,.14);font-size:14px}
+.ledger-row b{white-space:nowrap}
+.ledger-row.tot{font-weight:800;border-bottom:none;font-size:15.5px;padding-top:12px}
+.quote .qt{font-family:'Fraunces',serif;font-style:italic;font-size:19px;line-height:1.45}
+.quote .qa{font-size:12.5px;color:var(--ink2);margin-top:8px;font-weight:600}
+.sticky{position:sticky;top:92px;align-self:start}
+.book-panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.book-panel .imgbox{aspect-ratio:16/10;background:#2a2118;position:relative}
+.book-panel .pad{padding:26px}
+.price-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;gap:10px}
+.book-panel .price{font-family:'Fraunces',serif;font-size:36px;font-weight:600}
+.book-panel .unit{font-size:13px;color:var(--ink2);text-align:right}
+.fineprint{font-size:12px;color:var(--ink2);margin-top:14px;line-height:1.6}
+.fineprint a{color:var(--ember);font-weight:700;cursor:pointer;text-decoration:underline}
+.caption{font-size:11.5px;color:rgba(251,247,236,.65);padding:10px 14px;background:rgba(0,0,0,.35);position:absolute;bottom:0;left:0;right:0}
+.mem-note{display:flex;gap:10px;align-items:center;background:linear-gradient(90deg,rgba(192,144,47,.14),rgba(196,80,43,.12));border:1px solid rgba(192,144,47,.45);border-radius:12px;padding:12px 15px;font-size:12.5px;line-height:1.5;margin-top:14px;color:var(--ink2)}
+
+/* modal */
+.modal-root{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-root.open{display:flex}
+.modal-bg{position:absolute;inset:0;background:rgba(20,13,7,.6);backdrop-filter:blur(6px);animation:fadeIn .25s ease}
+.modal{position:relative;background:var(--bone);border-radius:24px;width:100%;max-width:540px;max-height:88vh;overflow:auto;padding:34px;box-shadow:0 40px 80px rgba(0,0,0,.4);animation:popIn .3s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes popIn{from{opacity:0;transform:translateY(18px) scale(.97)}}
+.modal h3{font-family:'Fraunces',serif;font-size:27px;font-weight:600;margin:4px 0 4px}
+.modal .sub{font-size:14px;color:var(--ink2);margin-bottom:10px}
+.modal-x{position:absolute;top:18px;right:18px;border:1px solid var(--line);background:#fff;width:36px;height:36px;border-radius:50%;font-size:17px;line-height:1;z-index:3}
+.cardfields{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+.processing{text-align:center;padding:30px 0}
+.spinner{width:44px;height:44px;border:3px solid var(--line);border-top-color:var(--ember);border-radius:50%;margin:0 auto 16px;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.summary{border-top:1px dashed var(--line);margin-top:20px;padding-top:16px;font-size:14px}
+.summary .r{display:flex;justify-content:space-between;padding:4px 0}
+.summary .r.total{font-weight:700;font-size:16.5px;border-top:1px solid var(--line);margin-top:10px;padding-top:12px}
+.summary .r.free span:last-child{color:var(--olive);font-weight:700}
+.summary .r.disc span:last-child{color:var(--ember);font-weight:700}
+.dep-note{display:flex;gap:10px;background:rgba(95,107,66,.12);border:1px solid rgba(95,107,66,.3);border-radius:12px;padding:13px 15px;font-size:12.5px;line-height:1.5;margin-top:16px;color:var(--ink2)}
+
+/* seat map */
+.seatmap{margin:20px 0;border:1px solid var(--line);background:#fff;border-radius:16px;padding:18px 12px}
+.seat-row{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
+.seat{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--ink);background:#fff;font-size:12px;font-weight:700;transition:all .15s;color:var(--ink)}
+.seat:hover:not(.taken){border-color:var(--ember);color:var(--ember)}
+.seat.sel{background:var(--ember);color:#fff;border-color:var(--ember);transform:scale(1.1)}
+.seat.taken{background:rgba(26,20,14,.07);border-color:transparent;color:rgba(26,20,14,.3);cursor:not-allowed;text-decoration:line-through}
+.table-bar{height:42px;margin:10px 6px;border-radius:10px;background:repeating-linear-gradient(45deg,#E9DCC2,#E9DCC2 12px,#DFD0AE 12px,#DFD0AE 24px);display:flex;align-items:center;justify-content:center;font-size:10px;letter-spacing:.34em;color:var(--ink2);font-weight:700}
+.seat-legend{display:flex;gap:16px;justify-content:center;font-size:11.5px;color:var(--ink2);margin-top:12px;flex-wrap:wrap}
+.seat-legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+
+/* ticket */
+.ticket{text-align:center;padding:8px 0;position:relative;overflow:hidden}
+.workmark{font-size:46px}
+.tk-code{display:inline-block;font-family:'Fraunces',serif;font-size:30px;letter-spacing:.06em;border:1.5px dashed var(--ink);border-radius:14px;padding:12px 26px;margin:18px 0 6px;background:#fff}
+.tk-meta{font-size:13.5px;color:var(--ink2);line-height:1.7}
+.tk-actions{display:grid;gap:10px;margin-top:22px}
+.confetti{position:absolute;width:8px;height:13px;top:-14px;opacity:0;animation:cfall 1.5s ease-in forwards;border-radius:2px;pointer-events:none}
+@keyframes cfall{12%{opacity:1}100%{transform:translateY(360px) rotate(640deg);opacity:0}}
+.seat-chips{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.seat-chip{background:var(--ember);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:6px 12px}
+.qr{display:grid;grid-template-columns:repeat(21,4px);grid-auto-rows:4px;gap:0;background:#fff;padding:8px;border-radius:10px;border:1px solid var(--line);flex-shrink:0}
+.qr i{display:block}
+.qr i.on{background:var(--ink)}
+.email-card{border:1px solid var(--line);background:#fff;border-radius:16px;overflow:hidden;margin-top:16px;text-align:left}
+.ec-head{background:var(--ink);color:var(--bone);padding:13px 18px;display:flex;justify-content:space-between;gap:10px;font-size:11.5px;flex-wrap:wrap}
+.ec-sub{padding:16px 18px;border-bottom:1px solid var(--line);font-family:'Fraunces',serif;font-size:19px;font-weight:600}
+.ec-body{padding:18px;font-size:14px;line-height:1.7}
+.ec-body p{margin-bottom:10px}
+.ec-addr{border:1px dashed var(--ember);background:rgba(196,80,43,.06);border-radius:12px;padding:14px;margin:12px 0;display:grid;gap:3px}
+.ec-addr span{font-size:10.5px;letter-spacing:.22em;color:var(--ember);font-weight:700}
+
+/* dashboard */
+.demo-band{background:var(--olive);color:#fff;font-size:13px;font-weight:600;padding:10px 0;text-align:center;letter-spacing:.04em}
+.dash-head{padding:56px 0 26px}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;padding-bottom:100px}
+@media(max-width:980px){.dash-grid{grid-template-columns:1fr}}
+.dcard{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:26px}
+.dcard h4{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink2);margin-bottom:16px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:18px;margin-bottom:26px}
+.kpi{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:20px 22px}
+.kpi .kn{font-family:'Fraunces',serif;font-size:32px;font-weight:600}
+.kpi .kl{font-size:12px;color:var(--ink2);margin-top:4px;font-weight:600}
+.kpi .kd{font-size:11.5px;color:var(--olive);font-weight:700;margin-top:6px}
+.kpi .kd.down{color:var(--ember)}
+.chart{display:flex;align-items:flex-end;gap:10px;height:150px;margin-top:10px}
+.chart .cb{flex:1;background:linear-gradient(180deg,var(--ember),var(--ember-dk));border-radius:6px 6px 3px 3px;position:relative;min-height:8px}
+.chart .cb.live{background:linear-gradient(180deg,var(--gold),var(--ember))}
+.chart-labels{display:flex;gap:10px;margin-top:8px}
+.chart-labels span{flex:1;text-align:center;font-size:10.5px;color:var(--ink2);font-weight:600}
+.trow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px dashed var(--line);font-size:14px;flex-wrap:wrap}
+.trow:last-child{border-bottom:none}
+.mini-bar{width:110px;height:5px;background:rgba(26,20,14,.1);border-radius:99px;overflow:hidden;flex-shrink:0}
+.mini-bar i{display:block;height:100%;background:var(--ember)}
+.glist{font-size:13.5px}
+.glist .grow{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.glist .diet{color:var(--ink2);font-size:12.5px;text-align:right}
+.imgpick{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:6px}
+.imgpick label{margin:0;position:relative;cursor:pointer}
+.imgpick input{position:absolute;opacity:0;pointer-events:none}
+.imgpick .th{aspect-ratio:1;border-radius:10px;overflow:hidden;border:2px solid transparent;transition:border-color .15s}
+.imgpick input:checked+.th{border-color:var(--ember)}
+@media(max-width:600px){.imgpick{grid-template-columns:repeat(4,1fr)}}
+
+/* membership */
+.mem-hero{padding:80px 0 30px;text-align:center}
+.mem-hero .lede{margin:0 auto}
+.tier{max-width:520px;margin:44px auto 0;background:var(--paper);border:2px solid var(--ink);border-radius:var(--r);padding:40px 36px;text-align:left;position:relative;overflow:hidden}
+.tier::before{content:"✦ FIRST CHAIR";position:absolute;top:0;right:0;background:linear-gradient(90deg,var(--gold),var(--ember));color:#fff;font-size:10.5px;font-weight:700;letter-spacing:.18em;padding:9px 18px;border-radius:0 0 0 14px}
+.tier .tprice{font-family:'Fraunces',serif;font-size:56px;font-weight:600;line-height:1}
+.tier .tper{font-size:14px;color:var(--ink2);margin-top:6px}
+.perks{list-style:none;margin:26px 0}
+.perks li{display:flex;gap:12px;padding:10px 0;font-size:15px;line-height:1.5;border-bottom:1px dashed var(--line)}
+.perks li::before{content:"✦";color:var(--ember);flex-shrink:0}
+.perks li.done::before{content:"✓";color:var(--olive)}
+.mem-actions{display:grid;gap:10px}
+.mem-manage{font-size:12.5px;color:var(--ink2);text-align:center;margin-top:14px}
+.mem-manage a{color:var(--ember);font-weight:700;cursor:pointer}
+
+/* forms */
+.host-hero{padding:70px 0 40px}
+.form-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:38px}
+.form-ok{text-align:center;padding:30px 10px}
+.form-ok .wm{font-size:44px}
+.steps-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:22px;margin:50px 0}
+.mini{border-top:2px solid var(--ink);padding-top:16px}
+.mini h4{font-size:15.5px;margin:8px 0 6px}
+.mini p{font-size:13.5px;color:var(--ink2);line-height:1.55}
+
+/* footer */
+footer{background:var(--dark);color:var(--bone);padding:80px 0 40px}
+.foot-word{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(56px,11vw,150px);line-height:.9;letter-spacing:-.03em;color:rgba(244,238,226,.14);user-select:none}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;margin:50px 0 60px}
+@media(max-width:800px){.foot-grid{grid-template-columns:1fr}}
+.foot-grid h5{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(244,238,226,.45);margin-bottom:14px}
+.foot-grid a{display:block;font-size:14.5px;padding:5px 0;color:rgba(244,238,226,.8);cursor:pointer}
+.foot-grid a:hover{color:#fff}
+.foot-form{display:flex;gap:10px;max-width:420px}
+.foot-form input{background:rgba(251,247,236,.08);border:1px solid rgba(251,247,236,.25);color:#fff;border-radius:999px;padding:13px 18px}
+.foot-form input::placeholder{color:rgba(251,247,236,.45)}
+.foot-fine{border-top:1px solid rgba(251,247,236,.14);padding-top:26px;font-size:12px;color:rgba(244,238,226,.45);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,80px);z-index:200;background:var(--ink);color:var(--paper);border-radius:999px;padding:14px 26px;font-size:14px;font-weight:600;opacity:0;transition:all .35s cubic-bezier(.2,.9,.3,1.3);pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{transform:translate(-50%,0);opacity:1}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+.empty{padding:80px 0;text-align:center;font-family:'Fraunces',serif;font-style:italic;font-size:22px;color:var(--ink2)}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  .reveal{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="go('#/')">Potluck<em>.</em></div>
+  <div class="nav-links">
+    <a onclick="go('#/explore')">This week's tables</a>
+    <a onclick="go('#/membership')">First Chair</a>
+    <a onclick="go('#/host')">Host with us</a>
+    <a onclick="go('#/dashboard')">Host dashboard</a>
+    <a onclick="go('#/#manifesto')">Manifesto</a>
+  </div>
+  <div class="nav-right">
+    <button class="member-chip" id="memberChip" onclick="go('#/membership')">✦ FIRST CHAIR</button>
+    <span class="live-chip" id="liveChip" title="Inventory syncs live across every open browser"><span class="ld"></span>LIVE</span>
+    <span class="city-chip">AUSTIN, TX</span>
+    <button class="ticket-pill" id="ticketPill" onclick="go('#/tickets')">🎟 My seats</button>
+    <button class="btn btn-line" id="acctBtn" style="padding:10px 18px;font-size:12.5px" onclick="accountClick()">Sign in</button>
+    <button class="btn btn-ink" style="padding:11px 22px;font-size:13.5px" onclick="go('#/host')">Become a host</button>
+  </div>
+</nav>
+
+<div id="app"></div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-word">POTLUCK</div>
+    <div class="foot-grid">
+      <div>
+        <h5>The Sunday Drop</h5>
+        <p style="font-size:14px;color:rgba(244,238,226,.7);line-height:1.6;margin-bottom:16px">New tables every Sunday at 6pm sharp. First come, first seated.</p>
+        <form class="foot-form" onsubmit="return subscribe(event)">
+          <input type="email" required placeholder="you@hungry.com" aria-label="Email for the Sunday drop" />
+          <button class="btn btn-ember" style="padding:13px 22px;font-size:13.5px">Join</button>
+        </form>
+      </div>
+      <div>
+        <h5>Cities</h5>
+        <a>Austin — <b style="color:var(--ember)">live now</b></a>
+        <a>Los Angeles — fall '26</a>
+        <a>Portland — fall '26</a>
+        <a>London — winter '26</a>
+      </div>
+      <div>
+        <h5>More</h5>
+        <a onclick="go('#/membership')">✦ First Chair membership</a>
+        <a onclick="go('#/host')">Apply to host</a>
+        <a onclick="go('#/dashboard')">Host dashboard (demo)</a>
+        <a>Host handbook</a>
+      </div>
+    </div>
+    <div class="foot-fine">
+      <span>© 2026 Potluck. Demo build — test mode, no real charges.</span>
+      <span>Made with ember &amp; bone in Austin.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="modal-root" id="modalRoot">
+  <div class="modal-bg" onclick="closeModal()"></div>
+  <div class="modal" id="modalBox"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================== DATA ============================== */
+const EVENTS = [
+  { id:'seoul', title:'Seoul Food', sub:'A seven-course Korean night', host:'Dana Kim', av:'DK',
+    hostBio:'Ex-Uchi line cook. Cooks the food her grandmother made in Busan — nothing fusion, nothing apologetic.',
+    img:'assets/korean.jpg', date:'Fri, Sep 25', time:'7:30 PM', iso:'20260925T193000', durH:2.5,
+    venue:'The back room at Lolo Wine Bar', hood:'East Austin', price:68, total:14, left:3, cat:'tasting', wc:9,
+    menu:['Yukhoe — beef tartare, Asian pear, pine nut','Haemul pajeon — scallion pancake, squid, dipping sauce','Bossam — slow pork belly, napa wraps, ssamjang','Charred galbi — pear-marinaded short rib','Doenjang jjigae — fermented soybean stew','Bap & banchan — rice, six pickles','Hotteok sundae — cinnamon pancake, miso ice cream'],
+    note:'BYOB welcome · vegetarian path with 48h notice · 14 seats, one shared table',
+    quotes:[["I came alone and left with two dinner plans and a crush on the ssamjang.","Marisol, 6 tables in"],["Dana remembered my allergy from March. Unreal. This is why I stopped eating at restaurants.","Pri, 9 tables in"]] },
+  { id:'pastry', title:'Pastry Morning', sub:'Cardamom buns & slow coffee', host:'June Park', av:'JP',
+    hostBio:'Former Tiny Boxwood pastry chef who believes Saturday should start with laminated dough.',
+    img:'assets/pastry.jpg', date:'Sat, Sep 26', time:'10:00 AM', iso:'20260926T100000', durH:2,
+    venue:'June\u2019s sunroom, address after booking', hood:'Hyde Park', price:28, total:10, left:2, cat:'morning', wc:4,
+    menu:['Cardamom buns, still warm','Brown-butter madeleines','Seasonal jam & cultured butter','Savory galette — squash, gruyère, sage','Single-origin filter, bottomless'],
+    note:'Come as you are · kids welcome · truly bottomless coffee',
+    quotes:[["My kid licked the plate. The other one asked if we could live here.","Ted, 3 tables in"]] },
+  { id:'pasta', title:'Sunday Gravy', sub:'Handmade pasta & natural wine', host:'Marco Bianchi', av:'MB',
+    hostBio:'Third-generation pasta maker. Will show you his nonna\u2019s rolling pin if you ask nicely.',
+    img:'assets/pasta.jpg', date:'Sun, Sep 27', time:'6:00 PM', iso:'20260927T180000', durH:3,
+    venue:'Courtyard at Figlia (closed Mondays — ours for the night)', hood:'South Congress', price:54, early:{seats:4, price:46}, total:12, left:7, cat:'casual', wc:6,
+    menu:['Focaccia & whipped ricotta to start','Tagliatelle al ragù — 6-hour Sunday sauce','Braised greens, chile, lemon','Panna cotta, macerated plums','Natural pours from small Italian growers'],
+    note:'Roll your own pasta if you want · one long courtyard table',
+    quotes:[["Marco made us roll our own tagliatelle and honestly? Mine was bad and it ruled anyway.","Devon, 2 tables in"]] },
+  { id:'hotpot', title:'Backyard Hot Pot Club', sub:'Two broths, sixteen strangers', host:'Linh Tran', av:'LT',
+    hostBio:'Software PM by day, broth obsessive by night. Has strong opinions about dipping sauce ratios.',
+    img:'assets/hotpot.jpg', date:'Wed, Sep 30', time:'7:00 PM', iso:'20260930T190000', durH:2.5,
+    venue:'Linh\u2019s backyard, string lights, address after booking', hood:'Mueller', price:45, early:{seats:6, price:39}, total:16, left:11, cat:'casual', wc:12,
+    menu:['Two broths — Sichuan mala & mushroom-herb','Thin-sliced beef, tofu, mushrooms, greens','Hand-pulled noodles for the second wind','The sauce bar (17 components, strong opinions)','Cold jasmine tea & plum seltzer'],
+    note:'BYOB · dog may beg for beef · vegetarians get their own pot',
+    quotes:[["Sixteen strangers went quiet for twenty minutes straight. Then someone cried about the broth. In a good way.","Alexis, 5 tables in"]] },
+  { id:'mezze', title:'Mezze & Records', sub:'A Levantine listening dinner', host:'Omar Haddad', av:'OH',
+    hostBio:'Radio DJ and mezze evangelist. Pairs every course with a side of vinyl from the eastern Mediterranean.',
+    img:'assets/mezze.jpg', date:'Thu, Oct 1', time:'8:00 PM', iso:'20261001T200000', durH:3,
+    venue:'Listening room above a barber shop', hood:'Downtown', price:62, early:{seats:8, price:52}, total:18, left:14, cat:'listening', wc:3,
+    menu:['Hummus Beiruti, olive oil pool, warm pita','Muhammara & charred flatbread','Kibbeh, labneh, mint salad','Whole roasted cauliflower, tahini, zhoug','Knafeh for the last side of the record'],
+    note:'Natural wine included · requests for side B accepted',
+    quotes:[["The Fairuz record landed exactly as the knafeh came out. I\u2019m not saying I cried. I\u2019m not not saying it.","Sam, 7 tables in"]] },
+  { id:'vermouth', title:'The Vermouth Hour', sub:'Anchovies on toast & bitter aperitivi', host:'Casa Loma wine bar × Potluck', av:'CL',
+    hostBio:'Our first venue residency: the bar team\u2019s secret after-hours menu, opened to twenty guests.',
+    img:'assets/vermouth.jpg', date:'Fri, Oct 2', time:'10:00 PM', iso:'20261002T220000', durH:2,
+    venue:'Casa Loma, after close', hood:'East 6th', price:35, total:20, left:0, cat:'tasting', wc:41,
+    menu:['House vermouth flight — three pours','Boquerones on grilled bread','Tinned fish board, picos, olives','Tortilla española at midnight','One more pour, bartender\u2019s choice'],
+    note:'Late seating · 20 seats · gone in 6 minutes last time',
+    quotes:[["Set an alarm, missed it anyway. Waitlisted. Worth every minute of the sulk.","Rae, waitlisted twice"]] },
+  { id:'ramen', title:'Midnight Ramen', sub:'After-service bowls, eight seats', host:'Kenji Sato', av:'KS',
+    hostBio:'Cooks ramen at a restaurant that shall remain unnamed. This is what he makes for the staff after close.',
+    img:'assets/ramen.jpg', date:'Sat, Oct 3', time:'11:30 PM', iso:'20261003T233000', durH:1.5,
+    venue:'Back alley counter, revealed at booking', hood:'Red River', price:40, early:{seats:2, price:34}, total:8, left:8, cat:'listening', wc:0, locked:true,
+    menu:['20-hour tonkotsu','Black garlic mayu, ajitama','The crispy rice snack','Highball optional, encouraged'],
+    note:'Eight seats. Drops Sunday 6pm. Sets records for fastest sellout.',
+    quotes:[] },
+  { id:'bread', title:'Flour & Salt', sub:'A hands-on sourdough workshop', host:'Priya Nair', av:'PN',
+    hostBio:'Runs The Saturday Loaf, a two-person micro-bakery. Will fix your crumb and your confidence in four hours.',
+    img:'assets/bread.jpg', date:'Sat, Oct 4', time:'9:00 AM', iso:'20261004T090000', durH:4,
+    venue:'Priya\u2019s teaching kitchen', hood:'Cherrywood', price:72, early:{seats:4, price:62}, total:12, left:9, cat:'workshop', wc:5,
+    menu:['Starter school — feed it, read it, save it','Mix, fold, shape — your own loaf, start to finish','Bake & taste — salt butter, three ways','Take home: active starter + your day-2 loaf','Coffee and day-old bread while we work'],
+    note:'Aprons provided · you leave with live starter · swear jar optional',
+    quotes:[["I killed three starters before this. My fourth is named Gerald and he is thriving.","Margaux, 1 table in"]] },
+  { id:'amaro', title:'Amaro & Affogato', sub:'A bitter little dessert night', host:'Wes Holloway', av:'WH',
+    hostBio:'Bartender, amaro hoarder, firm believer that dessert should be an event, not an afterthought.',
+    img:'assets/amaro.jpg', date:'Fri, Oct 9', time:'9:30 PM', iso:'20261009T213000', durH:2,
+    venue:'The marble bar at Holloway\u2019s, after close', hood:'Clarksville', price:38, early:{seats:6, price:32}, total:16, left:16, cat:'tasting', wc:2,
+    menu:['Amaro 101 — three pours, sweet to fernet','Affogato, poured tableside','Amaretti, torrone, dark chocolate','The one-more pour — bartender\u2019s pick'],
+    note:'Walk-ins never · this is the only way in · NA flight available',
+    quotes:[] },
+];
+const CATS = [['all','All tables'],['tasting','Ticketed tastings'],['casual','Casual tables'],['morning','Mornings'],['listening','Listening nights'],['workshop','Workshops']];
+const ASSETS = ['assets/korean.jpg','assets/hotpot.jpg','assets/pastry.jpg','assets/pasta.jpg','assets/mezze.jpg','assets/vermouth.jpg','assets/ramen.jpg','assets/bread.jpg','assets/amaro.jpg','assets/host.jpg','assets/hero.jpg'];
+const PAL = ['#C4502B','#C0902F','#5F6B42','#1A140E','#A33E20','#C4502B'];
+const VENUES = [
+  { id:'v1', name:'Lolo Wine Bar', night:'Mon, Oct 5', covers:'14 seats · back room', cut:'20% venue share' },
+  { id:'v2', name:'Figlia courtyard', night:'Mon, Oct 12', covers:'30 seats · heated', cut:'15% + wine split' },
+  { id:'v3', name:'Holloway\u2019s marble bar', night:'Wed, Oct 7', covers:'16 seats · after close', cut:'bar keeps drinks' },
+];
+
+/* ============================== STATE ============================== */
+const LS = {
+  get(k,d){ try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d} },
+  set(k,v){ try{localStorage.setItem(k,JSON.stringify(v))}catch(e){} }
+};
+let customEvents = LS.get('pk_custom_events', []);
+customEvents.forEach(e=>{ if(!EVENTS.find(x=>x.id===e.id)) EVENTS.push(e); });
+let seatsMap = LS.get('pk_seats', {});
+let bookings = LS.get('pk_bookings', []);
+let waitlist = LS.get('pk_waitlist', []);
+let notifyList = LS.get('pk_notify', []);
+let member = LS.get('pk_member', null);
+let credit = LS.get('pk_credit', 0);
+let follows = LS.get('pk_follows', []);
+let venueReqs = LS.get('pk_venue', []);
+let filter = 'all';
+let session = LS.get('pk_session', null);
+let myBookings = null;
+
+/* ---- remote sync (optional zero-dep Node backend: server.js) ----
+   When served by server.js the demo becomes multiplayer: seat claims are
+   atomic server-side and every open browser sees the same inventory.
+   Without it, everything below degrades to the localStorage world. */
+const REMOTE = { on:false };
+let remoteTaken = {};
+let waitlistCounts = {};
+let remotePrices = {};
+let remoteRatings = {};
+let payouts = {};
+let myOffers = null;
+let localReviews = LS.get('pk_reviews', []);
+function hydrate(s){
+  if(s.seats) seatsMap = Object.assign({}, s.seats);
+  remoteTaken = s.taken || {};
+  waitlistCounts = s.waitlistCounts || {};
+  if(s.prices) remotePrices = s.prices;
+  if(s.ratings) remoteRatings = s.ratings;
+  if(s.payouts) payouts = s.payouts;
+  (s.customEvents||[]).forEach(e=>{ if(!EVENTS.find(x=>x.id===e.id)){ EVENTS.push(e); if(!customEvents.find(x=>x.id===e.id)) customEvents.push(e); } });
+}
+function timeout(ms){ return new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms)) }
+async function bootRemote(){
+  try{
+    const r = await Promise.race([fetch('/api/state'), timeout(1000)]);
+    if(!r.ok) throw new Error('bad status');
+    const s = await r.json();
+    hydrate(s);
+    REMOTE.on = true;
+    const chip = document.getElementById('liveChip'); if(chip) chip.classList.add('show');
+    if(session) fetchMe();
+    render(false);
+    setInterval(pollRemote, 12000);
+  }catch(e){ /* offline demo mode: localStorage world */ }
+}
+async function pollRemote(){
+  const rootEl = document.getElementById('modalRoot');
+  if(rootEl && rootEl.classList.contains('open')) return;
+  try{
+    const r = await fetch('/api/state'); if(!r.ok) return;
+    const s = await r.json();
+    let hot = null;
+    Object.keys(s.seats||{}).forEach(id=>{
+      const before = seatsMap[id];
+      const after = s.seats[id];
+      if(before!=null && after<before) hot = {id, after};
+    });
+    Object.keys(s.prices||{}).forEach(id=>{
+      const before = remotePrices[id], after = s.prices[id];
+      if(before && after && before.tier!==after.tier && !document.hidden){
+        const e = ev(id);
+        if(e) toast('🐤 Early birds just sold out at '+e.title+' — now $'+after.now+'. Scarcity, made visible.');
+      }
+    });
+    hydrate(s);
+    if(session) fetchMe();
+    render(false);
+    if(hot && !document.hidden){
+      const e = ev(hot.id);
+      if(e) toast('Someone just claimed seats at '+e.title+' — '+hot.after+' left. Move like you mean it.');
+    }
+  }catch(e){}
+}
+function api(path, body){
+  if(!REMOTE.on) return Promise.resolve(null);
+  return fetch(path, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body||{})})
+    .then(r=> r.status===409 ? r.json().then(j=>({conflict:j})) : (r.ok? r.json() : null))
+    .catch(()=>null);
+}
+function track(type, payload){ if(REMOTE.on) api('/api/track', {type, payload: payload||null}); }
+function waitlistCount(e){ return REMOTE.on ? (waitlistCounts[e.id]||0) : ((Number(e.wc)||0)+waitlist.filter(w=>w.id===e.id).length); }
+
+function ev(id){ return EVENTS.find(e=>e.id===id) }
+function seatsLeft(e){ return seatsMap[e.id]!==undefined ? seatsMap[e.id] : e.left }
+function saveSeats(){ LS.set('pk_seats', seatsMap) }
+function soldPct(e){ return Math.round((e.total-seatsLeft(e))/e.total*100) }
+function money(n){ return '$'+n }
+function curPrice(e){
+  const rp = REMOTE.on ? remotePrices[e.id] : null;
+  if(rp) return rp;
+  const sold = e.total - seatsLeft(e);
+  if(e.early && sold < e.early.seats) return { now: e.early.price, tier:'early', earlyLeft: e.early.seats - sold, price: e.price };
+  return { now: e.price, tier:'general', earlyLeft: 0, price: e.price };
+}
+function fmtOffer(exp){
+  const s = Math.max(0, Math.round((exp - Date.now())/1000));
+  return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2);
+}
+function eventReviewHTML(e){
+  const rem = remoteRatings[e.id];
+  const locals = localReviews.filter(r=>r.eventId===e.id);
+  const n = (rem ? rem.n : 0) + locals.length;
+  if(!n) return '';
+  const avg = Math.round(((rem?rem.avg*rem.n:0) + locals.reduce((a,r)=>a+r.stars,0))/n*10)/10;
+  const quotes = locals.concat(rem ? rem.quotes : []).slice(0,4);
+  return `<div class="review-block">
+    <div class="rb-head"><span class="rb-avg">★${avg}</span><span class="rb-n">${n} field note${n>1?'s':''} from verified seats — you can only write one if you were checked in at the door.</span></div>
+    ${quotes.map(q=>`<div class="quote" style="margin-top:14px"><div class="qt"><span class="stars">${'★'.repeat(q.stars)}<span style="opacity:.25">${'★'.repeat(Math.max(0,5-q.stars))}</span></span> “${q.text}”</div><div class="qa">— ${q.name} · checked in ✓</div></div>`).join('')}
+  </div>`;
+}
+function isSubbed(){ return !!LS.get('pk_sub', null) }
+function isNotified(id){ return notifyList.some(n=>n.id===id) }
+function fmtLeft(e){
+  const l=seatsLeft(e);
+  if(l===0 && !e.locked) return 'Waitlist · '+waitlistCount(e)+' in line';
+  if(e.locked){
+    if(l===0) return 'Claimed early by members';
+    if(l<e.total) return 'Early access: '+l+' of '+e.total+' left';
+    return 'Drops Sunday · '+e.total+' seats';
+  }
+  return '<b>'+l+'</b> of '+e.total+' seats left';
+}
+function hashSeed(s){ let h=2166136261; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619) } return h>>>0 }
+function mul32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296 } }
+function takenSeats(e){
+  if(REMOTE.on && remoteTaken[e.id]) return new Set(remoteTaken[e.id]);
+  const sold = e.total - seatsLeft(e);
+  const rnd = mul32(hashSeed(e.id));
+  const set = new Set();
+  while(set.size < sold && set.size < e.total){ set.add(Math.floor(rnd()*e.total)) }
+  return set;
+}
+
+/* ============================== NAV / UTIL ============================== */
+function go(h){ if(h.startsWith('#/#')){ location.hash='#/'; setTimeout(()=>{const el=document.querySelector(h.slice(2)); if(el) el.scrollIntoView({behavior:'smooth'})},80); } else location.hash=h; }
+function scrollTop(){ window.scrollTo({top:0}) }
+function toast(msg){ const t=document.getElementById('toast'); t.innerHTML=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),3400); }
+function updateTicketPill(){ const p=document.getElementById('ticketPill'); if(bookings.length){ p.classList.add('show'); p.textContent='🎟 My seats ('+bookings.length+')' } else p.classList.remove('show'); }
+function updateMemberUI(){ const m=document.getElementById('memberChip'); if(m) m.classList.toggle('show', !!member); }
+function nextDrop(){ const n=new Date(); const d=new Date(n); d.setDate(n.getDate()+((7-n.getDay())%7)); d.setHours(18,0,0,0); if(d<=n) d.setDate(d.getDate()+7); return d; }
+function dropCountdown(){ const ms=nextDrop()-new Date(); const dd=Math.floor(ms/864e5), hh=Math.floor(ms/36e5)%24, mm=Math.floor(ms/6e4)%60, ss=Math.floor(ms/1e3)%60; return (dd>0?dd+'d ':'')+hh+'h '+mm+'m '+ss+'s'; }
+function upcomingDates(){
+  const out=[]; const n=new Date(); let d=new Date(n);
+  const labels=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const mons=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  while(out.length<8){ d=new Date(d.getTime()+864e5); const day=d.getDay(); if([0,5,6].includes(day)){ out.push({label:labels[day]+', '+mons[d.getMonth()]+' '+d.getDate(), iso:String(d.getFullYear())+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'T190000'}) } }
+  return out;
+}
+function toggleFollow(av, name){
+  const i = follows.indexOf(av);
+  if(i>=0){ follows.splice(i,1); toast("Unfollowed "+name+". The table will miss you."); }
+  else { follows.push(av); toast("Following "+name+" — you'll hear about new tables first."); }
+  LS.set('pk_follows', follows);
+  track('follow', {av, following: follows.includes(av)});
+  render(false);
+}
+function inviteCredit(){
+  credit = Math.min(30, credit + 10); LS.set('pk_credit', credit);
+  toast('Invite link copied — $10 credit banked ($'+credit+' total). It auto-applies at checkout.');
+}
+
+/* ============================== CARDS ============================== */
+function badge(e){
+  const l=seatsLeft(e);
+  if(e.locked && l===0) return '<span class="badge sold">Claimed early</span>';
+  if(e.locked) return member? '<span class="badge lock">✦ Early access</span>' : '<span class="badge lock">Locked · Sun 6pm</span>';
+  if(l===0) return '<span class="badge sold">Sold out</span>';
+  if(l<=4) return '<span class="badge low">Only '+l+' left</span>';
+  return '<span class="badge open">Booking</span>';
+}
+function card(e){
+  return `<div class="card reveal" onclick="go('#/event/${e.id}')">
+    <div class="card-img"><img src="${e.img}" alt="${e.title}" loading="lazy">${badge(e)}${(()=>{const p=curPrice(e);return p.tier==='early'?`<span class="price-pill">$${p.now}&nbsp;<s style="opacity:.5;font-weight:400">$${p.price}</s></span>`:`<span class="price-pill">$${p.now}</span>`;})()}</div>
+    <div class="card-body">
+      <div class="meta-line">${e.hood} · ${e.date} · ${e.time}</div>
+      <h3>${e.title}</h3>
+      <p class="sub">${e.sub}</p>
+      <div class="host-row"><span class="av">${e.av}</span> ${e.host} ${(()=>{const r=remoteRatings[e.id];return r&&r.n?`<span class="stars">· ★${r.avg} (${r.n})</span>`:(e.quotes&&e.quotes.length?'<span class="stars">· ★★★★★</span>':'');})()}</div>
+      <div class="seats">
+        <div class="bar"><i style="width:${soldPct(e)}%"></i></div>
+        <div class="txt">${fmtLeft(e)}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ============================== VIEWS ============================== */
+function vHome(){
+  const feat = EVENTS.filter(e=>!e.custom).slice(0,4).map(card).join('');
+  const subBlock = isSubbed()
+    ? `<div class="subbed">✓ You're on the list. See you Sunday at 6 — the ramen goes first.</div>`
+    : `<form class="hero-form" onsubmit="return subscribe(event)">
+         <input type="email" required placeholder="Email for the Sunday drop" aria-label="Email for the Sunday drop">
+         <button class="btn btn-ember">Get the drop</button>
+       </form>`;
+  return `
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy reveal in">
+        <div class="eyebrow"><span class="em">●</span>&nbsp; Ticketed dinners, hosted by the city's best cooks</div>
+        <h1 class="display">The best tables in town<br>aren't in <em>restaurants.</em></h1>
+        <p class="lede">Potluck is where Austin's cooks host ticketed dinners from backyards, borrowed wine bars, and back rooms. One shared table. Card hold required — flakers fund the tip pool.</p>
+        <div class="count-chip"><span class="dot"></span> Next drop in <b id="dropClock">${dropCountdown()}</b> · Sunday 6PM · 12 new tables</div>
+        ${subBlock}
+        ${isSubbed()?'':'<div class="hero-fine">One email a week. Unsubscribe whenever. 4,812 Austinites already on the list.</div>'}
+      </div>
+      <div class="hero-img reveal in">
+        <img src="assets/hero.jpg" alt="A long communal table at night, lit by candles">
+        <span class="tape t1">last week's hot pot club — 16 strangers, zero phones</span>
+        <span class="tape t2"><b>sold out in 6 minutes</b></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker"><div class="ticker-inner">
+    ${('<span>Sold out in 6 minutes <em>✦</em></span><span>One shared table <em>✦</em></span><span>"Best meal of my year" — a stranger <em>✦</em></span><span>No-show deposits · zero flakes <em>✦</em></span><span>Hosts paid every Friday <em>✦</em></span>').repeat(2)}
+  </div></div>
+
+  <section class="hair">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div><span class="num">01</span><span class="eyebrow">This week in Austin</span>
+          <h2 class="sec" style="margin-top:10px">The tables, before they go.</h2></div>
+        <button class="btn btn-line" onclick="go('#/explore')">See all ${EVENTS.length} tables →</button>
+      </div>
+      <div class="grid">${feat}</div>
+    </div>
+  </section>
+
+  <section class="dark">
+    <div class="wrap">
+      <span class="num">02</span><span class="eyebrow">Why now</span>
+      <h2 class="sec" style="margin-top:10px;max-width:16ch">The shift is already served.</h2>
+      <div class="stats">
+        <div class="stat reveal"><div class="n">+46%</div><div class="d">year-over-year growth in experiential dining formats — pop-ups, chef's tables, ticketed suppers.</div></div>
+        <div class="stat reveal"><div class="n">54%</div><div class="d">of diners say they'll pay a premium for a one-of-a-kind dining experience. Scarcity is a feature.</div></div>
+        <div class="stat reveal"><div class="n">€18M</div><div class="d">ARR reached by a dinner-with-strangers app in 20 months. People pay cash money to sit with strangers.</div></div>
+        <div class="stat reveal"><div class="n">96%</div><div class="d">of Potluck guests book a second table within 30 days. That's the whole business model.</div></div>
+      </div>
+      <div class="src">Sources: OpenTable 2026 dining trends · KitchenHub experiential dining report · public founder disclosures. Demo build — last stat aspirational.</div>
+    </div>
+  </section>
+
+  <section class="hair">
+    <div class="wrap">
+      <span class="num">03</span><span class="eyebrow">How it works</span>
+      <div class="split" style="margin-top:34px">
+        <div class="reveal">
+          <span class="col-label">If you're hungry</span>
+          <div class="step"><div class="no">1</div><div><h4>Get the drop</h4><p>New tables every Sunday at 6pm. The good ones are gone by 6:06. First Chair members book five minutes early — and Midnignt Ramen never sees 6:06.</p></div></div>
+          <div class="step"><div class="no">2</div><div><h4>Pick your seat</h4><p>Literally — tap your chair at the shared table. You pay when you book; a $25 hold backstops the host if you ghost.</p></div></div>
+          <div class="step"><div class="no">3</div><div><h4>Show up hungry</h4><p>Address revealed at booking. Other people's grandmothers' recipes, no small talk about apps.</p></div></div>
+        </div>
+        <div class="reveal">
+          <span class="col-label">If you cook</span>
+          <div class="step"><div class="no">1</div><div><h4>Apply in 10 minutes</h4><p>Tell us your concept. We read every application and taste-test the promising ones.</p></div></div>
+          <div class="step"><div class="no">2</div><div><h4>Publish your table</h4><p>Seats, menu, price, cadence — your storefront in minutes. Try it: the <a style="color:var(--ember);text-decoration:underline;cursor:pointer" onclick="go('#/dashboard')">demo dashboard</a> actually publishes live tables.</p></div></div>
+          <div class="step"><div class="no">3</div><div><h4>Get paid Friday</h4><p>Deposits kill no-shows, payouts land weekly, and your regulars follow you wherever you cook next.</p></div></div>
+        </div>
+      </div>
+
+      <div class="hostcta reveal" style="margin-top:70px">
+        <div class="bgimg"><img src="assets/host.jpg" alt="A host plating in a home kitchen"></div>
+        <div class="inner">
+          <div>
+            <span class="eyebrow" style="color:rgba(251,247,236,.6)">For hosts</span>
+            <h2 class="sec" style="color:#fff;margin:12px 0 18px">You cook.<br>We fill the room.</h2>
+            <p class="lede" style="color:rgba(251,247,236,.78)">No restaurant capital. No Instagram-DM invoicing. No flakes. Keep 88% of every seat — guests cover the service fee — and build a following that is yours, not the algorithm's.</p>
+            <div style="display:flex;gap:12px;margin-top:28px;flex-wrap:wrap">
+              <button class="btn btn-ember" onclick="go('#/host')">Apply to host</button>
+              <button class="btn btn-line" style="color:#fff;border-color:rgba(251,247,236,.6)" onclick="go('#/dashboard')">Try the dashboard</button>
+            </div>
+          </div>
+          <div class="calc reveal">
+            <div class="rlabel"><span>Seats per table</span><span id="cSeatsV">14</span></div>
+            <div class="row"><input type="range" id="cSeats" min="6" max="40" step="2" value="14" aria-label="Seats per table"></div>
+            <div class="rlabel"><span>Price per seat</span><span id="cPriceV">$60</span></div>
+            <div class="row"><input type="range" id="cPrice" min="20" max="120" step="5" value="60" aria-label="Price per seat"></div>
+            <div class="rlabel"><span>Tables per month</span><span id="cFreqV">5</span></div>
+            <div class="row"><input type="range" id="cFreq" min="1" max="12" step="1" value="5" aria-label="Tables per month"></div>
+            <div class="out">
+              <div><div class="big" id="cOut">$3,696</div><div class="per">your payout / month</div></div>
+              <div class="keep">You keep 88%. Paid every Friday.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hair manifesto" id="manifesto" style="padding-bottom:120px">
+    <div class="wrap reveal">
+      <span class="num">04</span><span class="eyebrow">Manifesto</span>
+      <p class="big" style="margin-top:26px">The most interesting food in your city is happening in backyards and borrowed wine bars — cooked by people who answer to their own taste, <em>not a landlord.</em> Restaurants had a good run. The host is the new chef. <em>The table is the product.</em></p>
+    </div>
+  </section>`;
+}
+
+function vExplore(){
+  const list = EVENTS.filter(e=>filter==='all'?true:e.cat===filter);
+  const chips = CATS.map(c=>`<button class="chip ${filter===c[0]?'on':''}" onclick="setFilter('${c[0]}')">${c[1]}</button>`).join('');
+  return `
+  <section style="padding-top:70px">
+    <div class="wrap">
+      <div class="eyebrow reveal in"><span class="em">●</span>&nbsp; Austin, TX · week of Sep 21</div>
+      <h1 class="display reveal in" style="font-size:clamp(38px,5.6vw,72px);margin:14px 0 6px">This week's <em>tables.</em></h1>
+      <p class="lede reveal in" style="margin-bottom:8px">${EVENTS.length} tables · one locked room dropping Sunday 6pm · bring an appetite, leave with strangers' phone numbers.</p>
+      <div class="drop-banner reveal in" style="margin-top:18px"><span class="dot"></span> Sunday drop in <b id="dropClock">${dropCountdown()}</b> — Midnight Ramen, 8 seats, ${member?'you can book it right now':'predicted sellout: 4 minutes'}.</div>
+      <div class="chips">${chips}</div>
+    </div>
+    <div class="wrap"><div class="grid">${list.map(card).join('') || '<div class="empty">No tables in this course yet.</div>'}</div></div>
+  </section>`;
+}
+
+function vEvent(id){
+  const e = ev(id); if(!e) return `<div class="empty" style="padding:140px 20px">This table has been cleared. <a style="color:var(--ember);cursor:pointer" onclick="go('#/explore')">Back to this week's tables →</a></div>`;
+  const l = seatsLeft(e);
+  const p = curPrice(e);
+  const reviewBlock = eventReviewHTML(e);
+  let cta, fine;
+  if(l===0 && !e.locked){
+    cta = `<button class="btn btn-ink btn-block" onclick="openWaitlist('${e.id}')">Join the waitlist</button>`;
+    fine = `Cancellations roll to the waitlist automatically, in order. Average wait: one week.`;
+  } else if(e.locked && !member){
+    cta = `<button class="btn btn-ink btn-block" onclick="openNotify('${e.id}')">🔒 Notify me at the drop <span id="dropClock" style="margin-left:6px;font-weight:400">${dropCountdown()}</span></button>`;
+    fine = `List members get the link at 5:55pm. The ramen has never lasted 6. <a onclick="go('#/membership')">✦ First Chair members book it right now →</a>`;
+  } else if(e.locked && member && l===0){
+    cta = `<button class="btn btn-line btn-block" disabled>Claimed early by members</button>`;
+    fine = `The whole room was booked during early access. It happens to the best tables.`;
+  } else {
+    const early = e.locked && member;
+    cta = `<button class="btn btn-gold btn-block" onclick="openBooking('${e.id}')">${early?'✦ Book early — First Chair':'Pick your seats'} — $${p.now}</button>`;
+    fine = `${member?'✦ <b>$0 service fees for you</b> — member perk':'$3/seat service fee'} · <b>$25/seat card hold</b> — only charged if you no-show. Full refund to 48h before.`;
+  }
+  const quoteBlock = (e.quotes||[]).map(q=>`<div class="quote"><div class="qt">“${q[0]}”</div><div class="qa">— ${q[1]} · verified seat-holder</div></div>`).join('');
+  const isF = follows.includes(e.av);
+  const memNote = (!member && !e.locked) ? `<div class="mem-note">✦ <span><b>First Chair</b> members pay $0 fees on every table and book locked drops early. <a style="color:var(--ember);font-weight:700;cursor:pointer;text-decoration:underline" onclick="go('#/membership')">Join for $10/mo</a></span></div>` : '';
+  return `
+  <div class="wrap ev-top">
+    <span class="back" onclick="go('#/explore')">← This week's tables</span>
+    <div class="ev-grid">
+      <div>
+        <div class="eyebrow"><span class="em">●</span>&nbsp; ${e.hood} · hosted by ${e.host}</div>
+        <h1 class="ev-title">${e.title}</h1>
+        <div class="ev-sub">${e.sub}</div>
+        <div class="ev-meta">
+          <div><div class="k">Date</div><div class="v">${e.date}</div></div>
+          <div><div class="k">Time</div><div class="v">${e.time}</div></div>
+          <div><div class="k">Where</div><div class="v">${e.hood}</div></div>
+          <div><div class="k">Seats</div><div class="v">${e.total} at one table</div></div>
+        </div>
+        <div class="eyebrow" style="margin-bottom:8px">The menu</div>
+        <ul class="menu">${e.menu.map(m=>`<li>${m}</li>`).join('')}</ul>
+        <div class="host-card">
+          <span class="av">${e.av}</span>
+          <div><h4>${e.host}</h4><p>${e.hostBio}</p></div>
+          <button class="btn btn-line follow-btn" style="padding:9px 16px;font-size:12px" onclick="toggleFollow('${e.av}','${e.host}')">${isF?'✓ Following':'＋ Follow'}</button>
+        </div>
+        ${quoteBlock}
+        ${reviewBlock}
+        <div class="rules"><b>House rules.</b> ${e.note}. Address revealed after booking. Phones welcome for photos, not for feeds. If you can't make it, your seat rolls to the waitlist and you're refunded in full.</div>
+      </div>
+      <div class="sticky">
+        <div class="book-panel">
+          <div class="imgbox"><img src="${e.img}" alt="${e.title}"><div class="caption">From last month's table — shot on film by a guest</div></div>
+          <div class="pad">
+            <div class="price-row"><div class="price">$${p.now}</div><div class="unit">${p.tier==='early'?`per seat · <s>$${p.price}</s><br><b style="color:var(--ember)">early bird · ${p.earlyLeft} left at this price</b>`:(e.early?`per seat,<br><span style="opacity:.7">early birds gone — full price now</span><br>everything included`:'per seat,<br>everything included')}</div></div>
+            <div class="seats" style="margin-bottom:18px">
+              <div class="bar"><i style="width:${soldPct(e)}%"></i></div>
+              <div class="txt">${fmtLeft(e)}</div>
+            </div>
+            ${cta}
+            ${memNote}
+            <div class="fineprint">${fine}<br><br>🎁 Bring-a-friend credit: your guest books, you both get $10 off the next table.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function vTickets(){
+  if(session && myBookings===null && REMOTE.on) fetchMe();
+  let merged = bookings.map(b=>Object.assign({local:true}, b));
+  if(session && Array.isArray(myBookings)){
+    myBookings.forEach(sb=>{ if(!merged.find(b=>b.code===sb.code)) merged.push(Object.assign({synced:true}, sb)); });
+  }
+  const syncing = session && myBookings===null && REMOTE.on;
+  const offersHTML = (Array.isArray(myOffers)?myOffers:[]).map(o=>{
+    const oe = ev(o.eventId); if(!oe) return '';
+    return `<div class="offer-card">
+      <div><b>🔔 A seat opened up at ${oe.title}.</b> ${oe.date} · ${oe.time} · ${oe.hood}<br>
+      <span style="color:var(--ink2);font-size:13.5px">You were next on the list and a seat just freed up — it's held for you. Clock: <b class="offer-exp" data-exp="${o.exp}">${fmtOffer(o.exp)}</b></span></div>
+      <button class="btn btn-ember" style="white-space:nowrap" onclick="claimOffer('${oe.id}','${o.hold}')">Claim my seat — $${curPrice(oe).now}</button>
+    </div>`;
+  }).join('');
+  const rows = merged.map(b=>{
+    const e = ev(b.eventId); if(!e) return '';
+    const seatChips = (b.seats||[]).map(s=>`<span class="seat-chip">seat ${s+1}</span>`).join('');
+    return `<div class="card" style="cursor:default">
+      <div class="card-body">
+        <div class="meta-line">${e.date} · ${e.time} · ${e.hood}</div>
+        <h3>${e.title}</h3>
+        <p class="sub">${b.qty} seat${b.qty>1?'s':''} for ${b.name||'you'} · paid $${b.total!=null?b.total:'—'}${b.diet?(' · “'+b.diet+'” noted'):''}</p>
+        <div class="host-row"><span class="av">${e.av}</span> ${e.host}</div>
+        ${seatChips?`<div class="seat-chips" style="justify-content:flex-start">${seatChips}</div>`:''}
+        <div style="display:flex;justify-content:space-between;gap:14px;align-items:center;margin-top:14px;flex-wrap:wrap">
+          <span class="tk-code" style="font-size:19px;padding:8px 18px;margin:0">${b.code}</span>
+          ${qrHTML(b.code)}
+        </div>
+        ${b.synced?`<div class="meta-line" style="color:var(--olive);margin-top:10px">✓ synced to ${session.email}</div>`:''}
+        ${b.checkedIn?`<div class="rev-box">${b.reviewed
+          ? `<div class="meta-line" style="color:var(--olive)">✓ Checked in and reviewed — your field note is on the table page, helping it sell out.</div>`
+          : `<div style="font-weight:700;margin-bottom:4px">You were there — how was the table?</div>
+             <div id="rs-${b.code}">${[1,2,3,4,5].map(i=>`<button type="button" class="star-btn" onclick="setStars('${b.code}',${i})">★</button>`).join('')}</div>
+             <input id="rt-${b.code}" maxlength="140" placeholder="One line for future strangers — 'came alone, left with plans'">
+             <div><button class="btn btn-ember" style="padding:10px 20px;font-size:13px" onclick="submitReview('${b.code}')">Post my field note</button></div>
+             <div style="font-size:11.5px;color:var(--ink2);margin-top:8px">The host checked you in at the door — that's why this note counts. No bots, no drive-by Yelp shills.</div>`}
+        </div>`:''}
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center">
+          <button class="btn btn-line" style="padding:10px 20px;font-size:13px" onclick="emailPeek('${e.id}','${b.code}')">View email</button>
+          <button class="btn btn-line" style="padding:10px 20px;font-size:13px" onclick="downloadICS('${e.id}','${b.code}')">Add to calendar</button>
+          <button class="btn btn-line" style="padding:10px 20px;font-size:13px" onclick="confirmCancel('${b.code}')">Can't make it?</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  return `<section style="padding-top:70px;padding-bottom:120px"><div class="wrap">
+    <div class="eyebrow"><span class="em">●</span>&nbsp; Your seats</div>
+    <h1 class="display" style="font-size:clamp(38px,5.6vw,72px);margin:14px 0 20px">Your <em>tickets.</em></h1>
+    ${credit?`<div class="drop-banner" style="margin-bottom:26px">🎁 Bring-a-friend credit balance: <b>$${credit}</b> — auto-applies at your next booking.</div>`:''}
+    ${syncing?`<div class="drop-banner" style="margin-bottom:26px"><span class="dot"></span> Syncing your seats across devices…</div>`:''}
+    ${offersHTML}
+    ${merged.length ? `<div class="grid" style="margin-top:30px">${rows}</div>` : `<div class="empty">No seats yet. <a style="color:var(--ember);cursor:pointer" onclick="go('#/explore')">Fix that →</a></div>`}
+  </div></section>`;
+}
+function confirmCancel(code){
+  const b = bookings.find(x=>x.code===code); if(!b) return;
+  const e = ev(b.eventId);
+  openModal(`
+    <button class="modal-x" onclick="closeModal()">✕</button>
+    <div class="eyebrow"><span class="em">Life happens</span> · Cancellation</div>
+    <h3>Return ${b.qty} seat${b.qty>1?'s':''} to the table?</h3>
+    <div class="sub">${e?e.title:''} — ${e?e.date:''}, ${e?e.time:''}. You're more than 48h out, so this is a full $${b.total} refund.</div>
+    <div class="dep-note">🔁 <span><b>What happens next:</b> your seat goes straight to the top of the waitlist, #1 gets an automatic text, and ${e?e.host:'the host'} never eats the empty chair. This is the whole machine working.</span></div>
+    <div class="tk-actions">
+      <button class="btn btn-ember btn-block" onclick="doCancel('${b.code}')">Yes — release my seats &amp; refund</button>
+      <button class="btn btn-line btn-block" onclick="closeModal()">Keep my seats</button>
+    </div>`);
+}
+function localCancelMath(b, e){
+  let promoted = false;
+  if(e){ seatsMap[e.id] = seatsLeft(e) + b.qty; saveSeats(); }
+  const wi = waitlist.findIndex(w=>w.id===b.eventId);
+  if(wi>=0){ waitlist.splice(wi,1); LS.set('pk_waitlist', waitlist); promoted = true; }
+  return promoted;
+}
+async function doCancel(code){
+  const i = bookings.findIndex(x=>x.code===code); if(i<0) return;
+  const b = bookings[i]; const e = ev(b.eventId);
+  let promoted = false;
+  if(REMOTE.on){
+    const res = await api('/api/cancel', {code});
+    if(res && res.ok){
+      promoted = !!res.promoted;
+      if(e){ seatsMap[e.id]=res.left; if(res.taken) remoteTaken[e.id]=res.taken; saveSeats(); }
+    } else promoted = localCancelMath(b, e);
+  } else promoted = localCancelMath(b, e);
+  bookings.splice(i,1); LS.set('pk_bookings', bookings);
+  updateTicketPill();
+  closeModal();
+  toast(promoted ? 'Seats returned — they just rolled to #1 on the waitlist. $'+b.total+' refund on its way.' : 'Seats returned to the table. $'+b.total+' refund on its way.');
+}
+
+/* ============================== WAITLIST MACHINE + FIELD NOTES ============================== */
+async function claimOffer(id, hold){
+  if(!REMOTE.on){ toast('The offer machine needs the server running (node server.js).'); return; }
+  const res = await api('/api/waitlist/claim', {eventId:id, hold, email: session?session.email:null, authToken: session?session.token:null});
+  if(res && res.code){
+    seatsMap[id]=res.left; if(res.taken) remoteTaken[id]=res.taken; saveSeats();
+    bookings.push({code:res.code, eventId:id, qty:1, seats:[res.seat], name:(session?session.email.split('@')[0]:'Guest'), email:session?session.email:'', diet:'', total:res.total, at:Date.now(), source:'waitlist'});
+    LS.set('pk_bookings', bookings);
+    updateTicketPill();
+    if(Array.isArray(myOffers)) myOffers = myOffers.filter(o=>!(o.eventId===id && o.hold===hold));
+    render(false);
+    toast('Seat '+((res.seat||0)+1)+' is yours — the machine works. Get excited.');
+  } else {
+    fetchMe(); render(false);
+    toast(res && res.error ? res.error : 'Too late — it rolled to the next person. The list keeps moving.');
+  }
+}
+function setStars(code, n){
+  window.__rs = window.__rs || {}; window.__rs[code] = n;
+  const box = document.getElementById('rs-'+code); if(!box) return;
+  box.querySelectorAll('.star-btn').forEach((b,i)=>b.classList.toggle('on', i<n));
+}
+async function submitReview(code){
+  const stars = (window.__rs||{})[code]||0;
+  const txt = (document.getElementById('rt-'+code)||{}).value || '';
+  if(!stars){ toast('Tap a star — even a brutal one.'); return; }
+  const res = await api('/api/review', {authToken: session?session.token:null, code, stars, text: txt});
+  if(res && res.ok){
+    if(Array.isArray(myBookings)) myBookings.forEach(b=>{ if(b.code===code) b.reviewed = true; });
+    toast('Posted. You just made every future seating decision easier — reputation, earned the hard way.');
+    fetchMe(); render(false);
+  } else {
+    toast(res && res.error ? res.error : 'Couldn\u2019t post that yet — the door check-in has to happen first.');
+  }
+}
+
+/* ============================== MEMBERSHIP ============================== */
+function vMembership(){
+  if(member){
+    const since = new Date(member.since).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+    const waived = bookings.filter(b=>b.at && b.at>=member.since).reduce((a,b)=>a+(b.feeWaived||0),0);
+    return `
+    <section class="mem-hero"><div class="wrap">
+      <div class="eyebrow"><span class="em">✦</span>&nbsp; First Chair</div>
+      <h1 class="display" style="font-size:clamp(40px,6vw,78px);margin:16px 0 18px">Front of the line,<br><em>permanently.</em></h1>
+      <p class="lede">Member since ${since} · ${member.plan==='y'?'Annual':'Monthly'} plan · ${money(waived)} in fees waived so far.</p>
+      <div class="tier">
+        <div class="tprice" style="font-size:38px">Your perks</div>
+        <ul class="perks">
+          <li class="done"><b>Book locked drops instantly</b> — Midnight Ramen is open to you right now, five days before the public.</li>
+          <li class="done"><b>$0 service fees, every table</b> — the $3/seat line just vanishes at checkout.</li>
+          <li class="done"><b>The 5:55pm link</b> — five minutes before every Sunday drop.</li>
+          <li class="done"><b>Host-follow priority</b> — followed hosts' surprise tables hit you first.</li>
+        </ul>
+        <div class="mem-actions">
+          <button class="btn btn-gold btn-block" onclick="go('#/event/ramen')">Book Midnight Ramen early →</button>
+          <button class="btn btn-line btn-block" onclick="go('#/explore')">Browse this week's tables</button>
+        </div>
+        <div class="mem-manage">Demo build · <a onclick="cancelMember()">cancel membership</a></div>
+      </div>
+    </div></section>`;
+  }
+  return `
+  <section class="mem-hero"><div class="wrap">
+    <div class="eyebrow"><span class="em">✦</span>&nbsp; Membership for the hungriest</div>
+    <h1 class="display" style="font-size:clamp(40px,6vw,78px);margin:16px 0 18px">Some tables you can't<br><em>wait in line for.</em></h1>
+    <p class="lede">The good tables sell out in minutes — that's the product working. First Chair is how you stop losing to it: early access, zero fees, and the drop link before the drop.</p>
+    <div class="tier">
+      <div class="tprice">$10</div>
+      <div class="tper">per month · or $96/year (two months on the house) · cancel anytime</div>
+      <ul class="perks">
+        <li><b>Book locked drops instantly.</b> Midnight Ramen opens to members five days early. Eight seats, members only, right now.</li>
+        <li><b>$0 service fees</b> on every booking (~$36/yr back if you go monthly, and you will).</li>
+        <li><b>The 5:55pm link</b> — every Sunday drop lands in your inbox five minutes before the public's.</li>
+        <li><b>Host-follow priority</b> — surprise tables from people you follow, before anyone else.</li>
+      </ul>
+      <div class="mem-actions">
+        <button class="btn btn-gold btn-block" onclick="openMembershipCheckout('m')">Join First Chair — $10/mo</button>
+        <button class="btn btn-line btn-block" onclick="openMembershipCheckout('y')">Go annual — $96/yr</button>
+      </div>
+      <div class="mem-manage">First 30 days free in this demo · test mode, no real charge</div>
+    </div>
+  </div></section>`;
+}
+function openMembershipCheckout(plan){
+  const price = plan==='y' ? 96 : 10;
+  const per = plan==='y' ? '/year' : '/month';
+  openModal(`
+    <button class="modal-x" onclick="closeModal()">✕</button>
+    <div class="eyebrow"><span class="em">✦ First Chair</span> · ${plan==='y'?'Annual':'Monthly'}</div>
+    <h3>$${price}${per}, front of every line</h3>
+    <div class="sub">First 30 days free in this demo. Locked drops, $0 fees, the 5:55pm link.</div>
+    <form onsubmit="return joinChair(event,'${plan}')">
+      <label>Email</label><input type="email" required placeholder="grace@navy.mil">
+      <label>Card number</label><input inputmode="numeric" required placeholder="4242 4242 4242 4242" maxlength="19" oninput="fmtCC(this)">
+      <div class="cardfields">
+        <div><label>Expiry</label><input required placeholder="12 / 28" maxlength="7" oninput="fmtCX(this)"></div>
+        <div><label>CVC</label><input required placeholder="314" maxlength="4" inputmode="numeric"></div>
+      </div>
+      <div class="summary"><div class="r total"><span>First charge</span><span>$0 today, then $${price}${per}</span></div></div>
+      <div style="margin-top:20px"><button class="btn btn-gold btn-block">Start membership</button></div>
+      <div class="fineprint" style="text-align:center">🧪 Demo build in test mode — no card is ever charged.</div>
+    </form>`);
+}
+function joinChair(evnt, plan){
+  evnt.preventDefault();
+  openModal(`<div class="processing"><div class="spinner"></div><div class="serif" style="font-size:21px;font-style:italic">Pulling up your chair…</div></div>`);
+  setTimeout(()=>{
+    member = { since: Date.now(), plan };
+    LS.set('pk_member', member);
+    track('member-join', {plan});
+    updateMemberUI();
+    openModal(`
+      <button class="modal-x" onclick="closeModal()">✕</button>
+      <div class="ticket">
+        <div class="workmark">✦</div>
+        <h3 style="margin-top:8px">You're First Chair now.</h3>
+        <div class="sub">${plan==='y'?'Annual':'Monthly'} · $0 fees everywhere · locked drops open to you early</div>
+        <div class="tk-meta">Midnight Ramen is bookable this second — eight seats, members only, five days before the public drop. Go be the reason it sells out.</div>
+        <div class="tk-actions">
+          <button class="btn btn-gold btn-block" onclick="closeModal(); go('#/event/ramen')">Book Midnight Ramen early →</button>
+          <button class="btn btn-line btn-block" onclick="closeModal()">Later — I'll gloat first</button>
+        </div>
+      </div>`);
+    spawnConfetti();
+  }, 1100);
+  return false;
+}
+function cancelMember(){
+  member = null; LS.set('pk_member', null);
+  updateMemberUI();
+  toast("Membership cancelled — we'll keep your seat at the public drop.");
+  render(false);
+}
+
+/* ============================== HOST LANDING ============================== */
+function vHost(){
+  return `
+  <section class="host-hero">
+    <div class="wrap">
+      <div class="eyebrow reveal in"><span class="em">●</span>&nbsp; Now accepting hosts in Austin</div>
+      <h1 class="display reveal in" style="font-size:clamp(40px,6vw,80px);margin:14px 0 18px">Your kitchen could be<br>the hardest seat <em>in town.</em></h1>
+      <p class="lede reveal in">Potluck hosts run ticketed dinners on their own terms — their menu, their price, their odd Tuesdays. We handle seats, payments, deposits, waitlists, reminders, and the audience. You handle the food.</p>
+      <div style="margin-top:26px"><button class="btn btn-line" onclick="go('#/dashboard')">Peek at the live host dashboard →</button></div>
+    </div>
+  </section>
+  <div class="wrap">
+    <div class="steps-mini reveal">
+      <div class="mini"><span class="num">1</span><h4>Apply in 10 minutes</h4><p>Concept, rough menu, where you'd host. No deck, no business plan.</p></div>
+      <div class="mini"><span class="num">2</span><h4>Taste &amp; list</h4><p>We come eat. If it sings, your first table goes in the Sunday drop.</p></div>
+      <div class="mini"><span class="num">3</span><h4>Sell out weekly</h4><p>Deposits kill no-shows; waitlists backfill cancellations automatically.</p></div>
+      <div class="mini"><span class="num">4</span><h4>Paid every Friday</h4><p>Keep 88% of every seat. Your guest list is exportable and yours.</p></div>
+    </div>
+    <div class="split" style="align-items:start;padding-bottom:100px">
+      <div class="reveal">
+        <div class="form-card" id="hostFormCard">
+          <h3 style="font-family:'Fraunces',serif;font-size:26px;font-weight:600">Host application — Austin</h3>
+          <p style="font-size:13.5px;color:var(--ink2);margin-top:6px">We read every application within a week. 0% platform fees for your first 3 months.</p>
+          <form onsubmit="return hostApply(event)">
+            <label>Your name</label><input required placeholder="Ada Loaf">
+            <label>Email</label><input type="email" required placeholder="ada@bakes.atx">
+            <label>Instagram (your current "storefront," we get it)</label><input placeholder="@adasloaves">
+            <label>The concept, in one delicious sentence</label><textarea rows="3" required placeholder="A nine-seat Oaxacan breakfast counter in my backyard, every other Sunday."></textarea>
+            <label>Where would you host?</label>
+            <select><option>My home / backyard</option><option>A partner venue (bar, café, restaurant off-night)</option><option>Not sure yet — help me figure it out</option></select>
+            <div style="margin-top:24px"><button class="btn btn-ember btn-block">Submit application</button></div>
+            <div class="fineprint" style="text-align:center">0% fees for 90 days · no exclusivity · leave whenever</div>
+          </form>
+        </div>
+      </div>
+      <div class="reveal">
+        <h3 style="font-family:'Fraunces',serif;font-size:27px;font-weight:600;margin-bottom:18px">What hosts actually make</h3>
+        <div class="menu" style="margin-bottom:26px">
+          <li><span><b>Dana (Seoul Food)</b> — 14 seats × $68 × 5/mo ≈ <b>$4,200/mo</b>, ex-line cook, waitlisted through November</span></li>
+          <li><span><b>Linh (Hot Pot Club)</b> — 16 seats × $45 × 4/mo ≈ <b>$2,530/mo</b>, started with a Google Form and a dream</span></li>
+          <li><span><b>June (Pastry Morning)</b> — 10 seats × $28 × 4/mo ≈ <b>$985/mo</b>, plus three private bookings a month from guests</span></li>
+        </div>
+        <div class="rules">Worried about permits? So were we. Venue-based tables run under the venue's license — the clean path. Home-hosted tables get our permit playbook (TX cottage-food &amp; local rules), plus liability cover through our group policy. We built the boring part so you don't have to.</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ============================== HOST DASHBOARD ============================== */
+function dashData(){
+  const danaEvents = EVENTS.filter(e=>e.av==='DK'||e.custom);
+  const seatsSold = danaEvents.reduce((a,e)=>a+(e.total-seatsLeft(e)),0);
+  const monthPayout = 3147 + Math.round(seatsSold*68*0.88);
+  const wl = danaEvents.reduce((a,e)=>a+(Number(e.wc)||0)+waitlist.filter(w=>w.id===e.id).length,0);
+  return {danaEvents, seatsSold, monthPayout, wl};
+}
+function vDash(){
+  const d = dashData();
+  const led = payouts['DK'] || { gross:0, n:0, parties:0 };
+  const ledFee = Math.round(led.gross * 0.12);
+  const rep = d.danaEvents.reduce((a,e)=>{ const r=remoteRatings[e.id]; if(r){ a.sum+=r.avg*r.n; a.n+=r.n; } return a; }, {sum:0,n:0});
+  const repAvg = rep.n ? Math.round(rep.sum/rep.n*10)/10 : null;
+  const followerCount = 1204 + (follows.includes('DK')?1:0);
+  const bars = [{l:'Sep 4',v:64},{l:'Sep 6',v:71},{l:'Sep 11',v:68},{l:'Sep 13',v:80},{l:'Sep 18',v:92},{l:'Sep 25',v:Math.min(100,Math.round((14-seatsLeft(ev('seoul')))/14*100)),live:true}];
+  const guests = [
+    {n:'Marisol G.', s:2, d:'no cilantro, seat preference: corner'},
+    {n:'Pri R.', s:1, d:'shellfish allergy — flagged to kitchen'},
+    {n:'Ted + Joanna', s:2, d:'anniversary — candle on the dessert?'},
+  ];
+  bookings.filter(b=>d.danaEvents.some(e=>e.id===b.eventId)).forEach(b=>guests.unshift({n:b.name+' (you)', s:b.qty, d:b.diet||'—'}));
+  window.__guests = guests;
+  const dateOpts = upcomingDates().map((dd,i)=>`<option value="${i}">${dd.label}</option>`).join('');
+  const catOpts = CATS.filter(c=>c[0]!=='all').map(c=>`<option value="${c[0]}">${c[1]}</option>`).join('');
+  const imgs = ASSETS.map((a,i)=>`<label><input type="radio" name="pimg" value="${a}" ${i===0?'checked':''}><span class="th"><img src="${a}" alt="Table photo option ${i+1}" loading="lazy"></span></label>`).join('');
+  const tableRows = d.danaEvents.map(e=>{
+    const sold = e.total-seatsLeft(e);
+    return `<div class="trow">
+      <div style="min-width:150px"><b>${e.title}</b><div style="font-size:12px;color:var(--ink2)">${e.date} · $${e.price} · ${e.hood}</div></div>
+      <div class="mini-bar"><i style="width:${soldPct(e)}%"></i></div>
+      <div style="font-size:12.5px;font-weight:600;min-width:88px;text-align:right">${sold}/${e.total} seats</div>
+      <button class="btn btn-line" style="padding:8px 16px;font-size:12px" onclick="go('#/event/${e.id}')">View page</button>
+    </div>`;
+  }).join('');
+  const venueRows = VENUES.map(v=>{
+    const req = venueReqs.includes(v.id);
+    return `<div class="trow">
+      <div style="min-width:170px"><b>${v.name}</b><div style="font-size:12px;color:var(--ink2)">${v.night} · ${v.covers}</div></div>
+      <div style="font-size:12px;color:var(--ink2)">${v.cut}</div>
+      <button class="btn ${req?'':'btn-line'}" style="padding:8px 16px;font-size:12px;${req?'background:var(--olive);color:#fff;pointer-events:none':''}" onclick="requestVenue('${v.id}','${v.name.replace(/'/g,'')}')">${req?'requested ✓':'Request night'}</button>
+    </div>`;
+  }).join('');
+  return `
+  <div class="demo-band">👩‍🍳 DEMO — you're viewing the host side as <b>&nbsp;Dana Kim (Seoul Food)</b>. Everything here is live: publish a table and it hits the feed.</div>
+  <div class="wrap dash-head">
+    <div class="eyebrow"><span class="em">●</span>&nbsp; Host dashboard</div>
+    <h1 class="display" style="font-size:clamp(36px,5vw,64px);margin:12px 0 8px">Kitchen confident, <em>Dana.</em></h1>
+    <p class="lede">Friday payout on schedule. Seoul Food is booked through October — the waitlist is doing marketing for you.</p>
+  </div>
+  <div class="wrap">
+    <div class="kpis">
+      <div class="kpi"><div class="kn">$${d.monthPayout.toLocaleString()}</div><div class="kl">September payout</div><div class="kd">▲ 18% vs Aug</div></div>
+      <div class="kpi"><div class="kn">${d.seatsSold}</div><div class="kl">seats filled this week</div><div class="kd">▲ zero no-shows</div></div>
+      <div class="kpi"><div class="kn">${d.wl}</div><div class="kl">humans on your waitlist</div><div class="kd">▲ organic, no ads</div></div>
+      <div class="kpi"><div class="kn">${followerCount.toLocaleString()}</div><div class="kl">followers get your drops first</div><div class="kd">▲ you are the algorithm</div></div>
+    </div>
+    <div class="dash-grid">
+      <div>
+        <div class="dcard" style="margin-bottom:26px">
+          <h4>Weekly table revenue</h4>
+          <div class="chart">${bars.map(b=>`<div class="cb ${b.live?'live':''}" style="height:${b.v}%"></div>`).join('')}</div>
+          <div class="chart-labels">${bars.map(b=>`<span>${b.l}</span>`).join('')}</div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:12px">Gold bar = this Friday, still selling. Deposits held on every seat.</div>
+        </div>
+        <div class="dcard" style="margin-bottom:26px">
+          <h4>Live ledger — the rails, not a mock-up</h4>
+          <div class="ledger-row"><span>Gross seat sales through the API</span><b>$${led.gross.toLocaleString()}</b></div>
+          <div class="ledger-row"><span>${led.n} seats · ${led.parties} parties booked</span><span style="color:var(--ink2);font-size:12px">since server boot</span></div>
+          <div class="ledger-row"><span>Potluck fee, 12% <span style="color:var(--ink2);font-weight:400">(payments, insurance, the waitlist machine)</span></span><b>−$${ledFee.toLocaleString()}</b></div>
+          <div class="ledger-row tot"><span>Net to your Friday payout</span><b>$${(led.gross-ledFee).toLocaleString()}</b></div>
+          ${repAvg?`<div class="ledger-row"><span>Your reputation</span><b>★${repAvg} · ${rep.n} field notes</b></div>`:''}
+          <div style="font-size:12px;color:var(--ink2);margin-top:10px">Book a seat from any browser and this moves in real time. Free a seat and it hands itself to your waitlist — revenue refilling itself.</div>
+        </div>
+        <div class="dcard" style="margin-bottom:26px">
+          <h4>Your tables</h4>
+          ${tableRows}
+        </div>
+        <div class="dcard" style="margin-bottom:26px">
+          <h4>Open venue nights near you</h4>
+          ${venueRows}
+          <div style="font-size:12px;color:var(--ink2);margin-top:14px">Restaurants list their dark nights; hosts claim them. The venue's license covers the food path — clean and legal.</div>
+        </div>
+        <div class="dcard">
+          <h4>Friday's guest list</h4>
+          <div class="glist">${guests.map(g=>`<div class="grow"><span><b>${g.n}</b> · ${g.s} seat${g.s>1?'s':''}</span><span class="diet">${g.d}</span></div>`).join('')}</div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:14px">Dietary notes land here straight from booking. One tap exports to your prep sheet.</div>
+          <div style="margin-top:14px"><button class="btn btn-line" style="padding:9px 16px;font-size:12px" onclick="exportGuests()">Export guest list (.csv)</button></div>
+        </div>
+        <div class="dcard" style="margin-top:26px">
+          <h4>Door check-in</h4>
+          <div style="display:flex;gap:10px">
+            <input id="ciCode" placeholder="PK-XXXX" style="flex:1;text-transform:uppercase;letter-spacing:.08em" aria-label="Ticket code">
+            <button class="btn btn-ink" style="padding:12px 20px;font-size:13px;flex-shrink:0" onclick="checkIn()">Validate</button>
+          </div>
+          <div id="ciOut" style="margin-top:14px"></div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:12px">Validates codes straight against the booking ledger — valid, duplicate scan, or fake. Try one of your own booking codes.</div>
+        </div>
+      </div>
+      <div>
+        <div class="dcard" id="pubCard">
+          <h4>Publish a new table</h4>
+          <form onsubmit="return publishTable(event)">
+            <label>Title</label><input id="pTitle" required maxlength="34" placeholder="Bulgogi & Bluegrass">
+            <label>One-line pitch</label><input id="pSub" required maxlength="48" placeholder="Smoked bulgogi, live fiddle, one long table">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div><label>Date</label><select id="pDate">${dateOpts}</select></div>
+              <div><label>Time</label><input id="pTime" required placeholder="7:00 PM"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div><label>Neighborhood</label><input id="pHood" required maxlength="20" placeholder="East Austin"></div>
+              <div><label>Venue</label><input id="pVenue" maxlength="34" placeholder="Dana's backyard"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+              <div><label>Price / seat</label><input id="pPrice" type="number" min="20" max="150" value="55" required></div>
+              <div><label>Seats</label><input id="pSeats" type="number" min="6" max="24" value="12" required></div>
+              <div><label>Type</label><select id="pCat">${catOpts}</select></div>
+            </div>
+            <label>Menu — one course per line</label>
+            <textarea id="pMenu" rows="4" required placeholder="Smoked bulgogi, sesame, scallion\nCharred cabbage, gochujang butter\nRice cakes, burnt honey ice cream"></textarea>
+            <label>Cover photo</label>
+            <div class="imgpick">${imgs}</div>
+            <div class="dep-note" style="margin-top:18px">🚀 <span><b>This is real.</b> Hit publish and your table goes live in the city's feed — with seat map, waitlist, deposits, the works. Someone could book it in the next five minutes. In this demo, that someone is you.</span></div>
+            <div style="margin-top:18px"><button class="btn btn-ember btn-block">Publish to the Sunday drop →</button></div>
+          </form>
+        </div>
+        <div class="dcard" style="margin-top:26px">
+          <h4>Message your people</h4>
+          <label>Audience</label>
+          <select id="blastSeg">
+            <option value="waitlist">Your waitlist — the hungry line</option>
+            <option value="guests">Friday's guests</option>
+            <option value="followers">Your followers</option>
+          </select>
+          <label>Message</label>
+          <textarea id="blastMsg" rows="3" placeholder="Seoul Food #10 drops Sunday — two seats held for regulars who reply fast."></textarea>
+          <div style="margin-top:14px"><button class="btn btn-ember btn-block" onclick="sendBlast()">Send blast</button></div>
+          <div id="blastOut" style="margin-top:12px;font-size:13px;color:var(--ink2)"></div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:12px">Owned channel > algorithm. Hosts who blast weekly sell out 3× faster.</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function requestVenue(id, name){
+  venueReqs.push(id); LS.set('pk_venue', venueReqs);
+  track('venue-request', {id, name});
+  toast('Request sent to '+name+' — venues usually reply within a day.');
+  render(false);
+}
+function publishTable(evnt){
+  evnt.preventDefault();
+  const dates = upcomingDates();
+  const d = dates[Number(document.getElementById('pDate').value)||0];
+  const img = (document.querySelector('input[name=pimg]:checked')||{}).value || ASSETS[0];
+  const menu = document.getElementById('pMenu').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const seatCount = Math.max(6, Math.min(24, Number(document.getElementById('pSeats').value)||12));
+  const price = Math.max(20, Math.min(150, Number(document.getElementById('pPrice').value)||55));
+  const custom = {
+    id:'x'+Date.now().toString(36), custom:true,
+    title:document.getElementById('pTitle').value.trim(),
+    sub:document.getElementById('pSub').value.trim(),
+    host:'Dana Kim', av:'DK', hostBio:'You. This is your table — published straight from the Potluck host dashboard.',
+    img, date:d.label, time:document.getElementById('pTime').value.trim()||'7:00 PM', iso:d.iso, durH:2.5,
+    venue:(document.getElementById('pVenue').value.trim()||(document.getElementById('pHood').value.trim()+', address after booking')),
+    hood:document.getElementById('pHood').value.trim(),
+    price, total:seatCount, left:seatCount, cat:document.getElementById('pCat').value, wc:0,
+    menu: menu.length?menu:['Chef\u2019s choice — trust the kitchen'],
+    note:'Just published to the Sunday drop · deposits on every seat · payout Friday',
+    quotes:[]
+  };
+  if(REMOTE.on){
+    toast("Publishing…");
+    api('/api/publish', {event:custom}).then(res=>{
+      const ne = (res && res.event) ? res.event : custom;
+      if(!EVENTS.find(x=>x.id===ne.id)) EVENTS.push(ne);
+      if(!customEvents.find(x=>x.id===ne.id)) customEvents.push(ne);
+      LS.set('pk_custom_events', customEvents);
+      toast("🔥 "+ne.title+" is live — it's in the Sunday drop and bookable right now.");
+      go('#/event/'+ne.id);
+    });
+    return false;
+  }
+  EVENTS.push(custom);
+  customEvents.push(custom); LS.set('pk_custom_events', customEvents);
+  toast("🔥 "+custom.title+" is live — it's in the Sunday drop and bookable right now.");
+  go('#/event/'+custom.id);
+  return false;
+}
+
+/* ============================== BOOKING FLOW ============================== */
+let bk = null;
+function openModal(html){ document.getElementById('modalBox').innerHTML = html; document.getElementById('modalRoot').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(){ document.getElementById('modalRoot').classList.remove('open'); document.body.style.overflow=''; bk=null; render(false); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && document.getElementById('modalRoot').classList.contains('open')) closeModal(); });
+
+function bkTotals(e){
+  const qty = bk ? bk.seats.length : 0;
+  const sub = curPrice(e).now*qty;
+  const fee = member ? 0 : 3*qty;
+  const disc = Math.min(credit, 10, sub+fee);
+  return { qty, sub, fee, disc, total: sub+fee-disc };
+}
+function seatmapHTML(e, selected){
+  const taken = takenSeats(e);
+  const seats = [];
+  for(let i=0;i<e.total;i++){
+    const st = taken.has(i)?'taken':(selected.includes(i)?'sel':'');
+    seats.push(`<button type="button" class="seat ${st}" ${taken.has(i)?'disabled':''} onclick="toggleSeat(${i})" aria-label="Seat ${i+1}">${i+1}</button>`);
+  }
+  const half = Math.ceil(e.total/2);
+  return `<div class="seatmap">
+    <div class="seat-row">${seats.slice(0,half).join('')}</div>
+    <div class="table-bar">ONE &nbsp; SHARED &nbsp; TABLE</div>
+    <div class="seat-row">${seats.slice(half).join('')}</div>
+    <div class="seat-legend"><span><i style="background:#fff;border:1.5px solid var(--ink)"></i>open</span><span><i style="background:var(--ember)"></i>yours</span><span><i style="background:rgba(26,20,14,.12)"></i>taken</span></div>
+  </div>`;
+}
+function bkSummaryHTML(e){
+  const t = bkTotals(e);
+  if(!t.qty) return `<div class="summary"><div class="r"><span style="color:var(--ink2)">Tap seats at the table to hold them.</span></div></div>`;
+  return `<div class="summary">
+    <div class="r"><span>Seats ${bk.seats.map(s=>s+1).join(' & ')}</span><span>${money(t.sub)}</span></div>
+    ${member
+      ? `<div class="r free"><span>Service fee</span><span>waived ✦ First Chair</span></div>`
+      : `<div class="r"><span>Service fee ($3/seat)</span><span>${money(t.fee)}</span></div>`}
+    ${t.disc?`<div class="r disc"><span>Bring-a-friend credit</span><span>−${money(t.disc)}</span></div>`:''}
+    ${t.qty&&curPrice(e).tier==='early'?`<div class="r" style="color:var(--ember);font-weight:600"><span>🔥 Early-bird — step-up when ${curPrice(e).earlyLeft} more sell</span><span>saved ${money((curPrice(e).price-curPrice(e).now)*t.qty)}</span></div>`:''}
+    <div class="r total"><span>Total today</span><span>${money(t.total)}</span></div>
+  </div>`;
+}
+function renderBkStep1(){
+  const e = ev(bk.id);
+  openModal(`
+    <button class="modal-x" onclick="closeModal()">✕</button>
+    <div class="eyebrow"><span class="em">Step 1 of 2</span> · Your seats &amp; details</div>
+    <h3>${e.title}</h3>
+    <div class="sub">${e.date} · ${e.time} · ${e.hood} · hosted by ${e.host}</div>
+    ${seatmapHTML(e, bk.seats)}
+    <form onsubmit="return bkToCard(event)">
+      <label>Name on the reservation</label><input id="bkName" required placeholder="Grace Hopper" value="${bk.name||''}">
+      <label>Email for the address &amp; receipt</label><input id="bkEmail" type="email" required placeholder="grace@navy.mil" value="${bk.email||''}">
+      <label>Allergies / dietary notes <span style="opacity:.55;text-transform:none;letter-spacing:0">(goes straight to the host's prep sheet)</span></label>
+      <input id="bkDiet" placeholder="One shellfish allergy, one vegetarian" value="${bk.diet||''}">
+      <div class="dep-note">🔒 <span><b>$25/seat card hold.</b> It's released when you show up. If you ghost, $25 goes to the host. Flakes fund dinner — beautiful system.</span></div>
+      <div id="bkSummary">${bkSummaryHTML(e)}</div>
+      <div style="margin-top:20px"><button class="btn btn-ember btn-block" ${bk.seats.length?'':'disabled'}>Continue to payment →</button></div>
+    </form>`);
+}
+function toggleSeat(i){
+  bk.name = (document.getElementById('bkName')||{}).value || bk.name;
+  bk.email = (document.getElementById('bkEmail')||{}).value || bk.email;
+  bk.diet = (document.getElementById('bkDiet')||{}).value || bk.diet;
+  const idx = bk.seats.indexOf(i);
+  if(idx>=0) bk.seats.splice(idx,1);
+  else {
+    if(bk.seats.length>=6){ toast('Six seats max per booking — the table needs strangers too.'); return; }
+    bk.seats.push(i); bk.seats.sort((a,b)=>a-b);
+  }
+  renderBkStep1();
+}
+function openBooking(id){
+  const e = ev(id);
+  if(e.locked && !member){ toast('That table is locked until Sunday 6pm — First Chair members book early.'); return; }
+  bk = { id, seats: [] };
+  renderBkStep1();
+}
+function bkToCard(evnt){
+  evnt.preventDefault();
+  bk.name = document.getElementById('bkName').value.trim();
+  bk.email = document.getElementById('bkEmail').value.trim();
+  bk.diet = document.getElementById('bkDiet').value.trim();
+  if(!bk.seats.length){ toast('Pick at least one seat at the table.'); return false; }
+  const e = ev(bk.id);
+  const t = bkTotals(e);
+  openModal(`
+    <button class="modal-x" onclick="closeModal()">✕</button>
+    <div class="eyebrow"><span class="em">Step 2 of 2</span> · Payment</div>
+    <h3>Lock in seat${t.qty>1?'s':''} ${bk.seats.map(s=>s+1).join(' & ')}</h3>
+    <div class="sub">${e.title} — ${e.date}, ${e.time}</div>
+    <form onsubmit="return bkPay(event)">
+      <label>Card number</label><input id="cc" inputmode="numeric" required placeholder="4242 4242 4242 4242" maxlength="19" oninput="fmtCC(this)">
+      <div class="cardfields">
+        <div><label>Expiry</label><input id="cx" required placeholder="12 / 28" maxlength="7" oninput="fmtCX(this)"></div>
+        <div><label>CVC</label><input id="cv" required placeholder="314" maxlength="4" inputmode="numeric"></div>
+      </div>
+      <div class="summary">
+        <div class="r"><span>Seats ${bk.seats.map(s=>s+1).join(' & ')}</span><span>${money(t.sub)}</span></div>
+        ${member
+          ? `<div class="r free"><span>Service fee</span><span>waived ✦ First Chair</span></div>`
+          : `<div class="r"><span>Service fee ($3/seat)</span><span>${money(t.fee)}</span></div>`}
+        ${t.disc?`<div class="r disc"><span>Bring-a-friend credit</span><span>−${money(t.disc)}</span></div>`:''}
+        <div class="r total"><span>Charge today</span><span>${money(t.total)}</span></div>
+      </div>
+      <div style="margin-top:20px"><button class="btn btn-gold btn-block">Pay ${money(t.total)}</button></div>
+      <div class="fineprint" style="text-align:center">🧪 Demo build in test mode — no card is ever charged.</div>
+    </form>`);
+  return false;
+}
+function fmtCC(el){ el.value = el.value.replace(/[^\d]/g,'').slice(0,16).replace(/(.{4})/g,'$1 ').trim() }
+function fmtCX(el){ let v=el.value.replace(/[^\d]/g,'').slice(0,4); el.value = v.length>2 ? v.slice(0,2)+' / '+v.slice(2) : v }
+function spawnConfetti(){
+  const box = document.querySelector('.ticket'); if(!box) return;
+  for(let i=0;i<44;i++){
+    const s = document.createElement('span');
+    s.className='confetti';
+    s.style.left = Math.random()*100+'%';
+    s.style.background = PAL[i%PAL.length];
+    s.style.animationDelay = (Math.random()*0.55)+'s';
+    s.style.animationDuration = (1.1+Math.random()*0.9)+'s';
+    box.appendChild(s);
+    setTimeout(()=>s.remove(), 2600);
+  }
+}
+function bkPay(evnt){
+  if(evnt && evnt.preventDefault) evnt.preventDefault();
+  const e = ev(bk.id);
+  const t = bkTotals(e);
+  const unitGate = curPrice(e).now;
+  openModal(`<div class="processing"><div class="spinner"></div><div class="serif" style="font-size:21px;font-style:italic">Plating your seat${t.qty>1?'s':''}…</div></div>`);
+  setTimeout(async ()=>{
+    let code = null;
+    if(REMOTE.on){
+      const res = await api('/api/book', {eventId:e.id, seats:[...bk.seats], name:bk.name, email:bk.email, diet:bk.diet, total:t.total, authToken: session?session.token:null});
+      if(res && res.conflict){
+        seatsMap[e.id]=res.conflict.left; remoteTaken[e.id]=res.conflict.taken; saveSeats();
+        const survivors = bk.seats.filter(s=>!res.conflict.taken.includes(s));
+        const lost = bk.seats.length - survivors.length;
+        bk.seats = survivors;
+        toast(lost ? (bk.seats.length ? 'Race! '+lost+' seat'+(lost>1?'s were':' was')+' claimed as you booked — kept your other pick'+(bk.seats.length>1?'s':'')+'.' : 'Too slow — those seats were just claimed. Grab fresh ones.') : 'Availability just changed — re-check the table.');
+        renderBkStep1();
+        return;
+      }
+      if(res && res.code){
+        code = res.code; seatsMap[e.id]=res.left; if(res.taken) remoteTaken[e.id]=res.taken;
+        if(res.price!=null && res.price!==unitGate) setTimeout(()=>toast('🐤 Early birds sold out as you booked — seats locked at $'+res.price+' each. Scarcity isn\u2019t a vibe here, it\u2019s arithmetic.'),1500);
+      }
+    }
+    if(!code){
+      code = 'PK-'+Math.random().toString(36).slice(2,6).toUpperCase();
+      seatsMap[e.id] = Math.max(0, seatsLeft(e) - t.qty);
+    }
+    saveSeats();
+    credit = Math.max(0, credit - t.disc); LS.set('pk_credit', credit);
+    bookings.push({code, eventId:e.id, qty:t.qty, seats:[...bk.seats], name:bk.name, email:bk.email, diet:bk.diet, total:t.total, at:Date.now(), feeWaived:(member?3*t.qty:0)});
+    LS.set('pk_bookings', bookings);
+    updateTicketPill();
+    const name = bk.name;
+    openModal(`
+      <button class="modal-x" onclick="closeModal()">✕</button>
+      <div class="ticket">
+        <div class="workmark">🍲</div>
+        <h3 style="margin-top:8px">You're at the table, ${name.split(' ')[0]}.</h3>
+        <div class="sub">${e.title} — ${e.date}, ${e.time} · ${e.venue}</div>
+        <div class="seat-chips">${bk.seats.map(s=>`<span class="seat-chip">seat ${s+1}</span>`).join('')}</div>
+        <div class="tk-code">${code}</div>
+        <div style="display:flex;justify-content:center;margin:6px 0">${qrHTML(code)}</div>
+        <div class="tk-meta">${t.qty} seat${t.qty>1?'s':''} · charged ${money(t.total)}${member?' · fees waived ✦':''}${t.disc?' · credit applied':''} · ${e.host} got your dietary notes<br>The exact address just went to ${bk.email}. Come hungry, leave with numbers.</div>
+        ${member?'':`<div class="mem-note" style="text-align:left">✦ <span>This table cost you $${3*t.qty} in fees. <b>First Chair</b> members pay $0 — and book locked drops early. <a style="color:var(--ember);font-weight:700;cursor:pointer;text-decoration:underline" onclick="closeModal(); go('#/membership')">Join for $10/mo</a></span></div>`}
+        <div class="tk-actions">
+          <button class="btn btn-gold btn-block" onclick="emailPeek('${e.id}','${code}')">Preview the confirmation email</button>
+          <button class="btn btn-ink btn-block" onclick="downloadICS('${e.id}','${code}')">Add to calendar</button>
+          <button class="btn btn-line btn-block" onclick="inviteCredit()">Invite a friend (+$10 credit)</button>
+          <button class="btn btn-line btn-block" onclick="closeModal()">Done</button>
+        </div>
+      </div>`);
+    spawnConfetti();
+  }, 1100);
+  return false;
+}
+
+/* waitlist + notify */
+function openWaitlist(id){
+  const e = ev(id);
+  const pos = waitlist.filter(w=>w.id===id).length + 3 + Math.floor(Math.random()*3);
+  openModal(`
+    <button class="modal-x" onclick="closeModal()">✕</button>
+    <div class="eyebrow"><span class="em">Sold out</span> · Waitlist</div>
+    <h3>Get next in line</h3>
+    <div class="sub">${e.title} — ${e.date}, ${e.time}. Seats roll to the waitlist in order, automatically.</div>
+    <form onsubmit="return joinWaitlist(event,'${e.id}',${pos})">
+      <label>Name</label><input id="wlName" required placeholder="Grace Hopper">
+      <label>Email</label><input id="wlEmail" type="email" required placeholder="grace@navy.mil">
+      <div class="dep-note">⏱️ <span><b>How this actually works:</b> when a seat frees up, the first human in line gets a 10-minute window to claim it. Sign in with this email — the seat comes looking for <i>you</i>.</span></div>
+      <div style="margin-top:22px"><button class="btn btn-ink btn-block">Join waitlist</button></div>
+    </form>`);
+}
+function joinWaitlist(evnt, id, pos){
+  evnt.preventDefault();
+  const nm = (document.getElementById('wlName')||{}).value || '';
+  const em = ((document.getElementById('wlEmail')||{}).value || '').trim().toLowerCase();
+  waitlist.push({id, at: Date.now(), email: em}); LS.set('pk_waitlist', waitlist);
+  api('/api/waitlist', {eventId:id, name:nm, email:em}).then(res=>{
+    if(res && res.pos) toast("You're #"+res.pos+" in line (server-confirmed). If a seat frees up, it finds your inbox — 10 minutes to claim.");
+  });
+  toast(`You're #${pos} in line. We move fast when a seat opens.`);
+  closeModal();
+  return false;
+}
+function openNotify(id){
+  const e = ev(id);
+  openModal(`
+    <button class="modal-x" onclick="closeModal()">✕</button>
+    <div class="eyebrow"><span class="em">Locked drop</span> · Sunday 6PM</div>
+    <h3>Know 5 minutes early</h3>
+    <div class="sub">${e.title} — ${e.total} seats. List members get the booking link at 5:55pm. It has never lasted past 6:06.</div>
+    <form onsubmit="return doNotify(event,'${e.id}')">
+      <label>Email</label><input type="email" required placeholder="grace@navy.mil">
+      <div style="margin-top:22px"><button class="btn btn-ink btn-block">Notify me at the drop</button></div>
+    </form>`);
+}
+function doNotify(evnt, id){
+  evnt.preventDefault();
+  notifyList.push({id, at: Date.now()}); LS.set('pk_notify', notifyList);
+  track('notify', {id});
+  toast("Alarm set. Sunday 5:55pm — don't blink.");
+  closeModal();
+  return false;
+}
+
+/* ============================== ACCOUNTS ============================== */
+function accountClick(){ if(session) openAccount(); else openAuth(); }
+function updateAccountUI(){
+  const b = document.getElementById('acctBtn'); if(!b) return;
+  if(session){
+    const name = session.email.split('@')[0];
+    b.innerHTML = '<span class="av" style="width:20px;height:20px;font-size:9px;background:var(--olive)">'+name.slice(0,2).toUpperCase()+'</span> '+name;
+  } else b.textContent = 'Sign in';
+}
+function openAuth(){
+  openModal(`
+    <button class="modal-x" onclick="closeModal()">✕</button>
+    <div class="eyebrow"><span class="em">●</span>&nbsp; Account</div>
+    <h3>Sign in with email</h3>
+    <div class="sub">No passwords — we email you a one-time code. Your seats then sync across every device and browser.</div>
+    <form onsubmit="return authSend(event)">
+      <label>Email</label><input id="auEmail" type="email" required placeholder="grace@navy.mil">
+      <div style="margin-top:20px"><button class="btn btn-ink btn-block">Email me a code</button></div>
+    </form>`);
+}
+async function authSend(evnt){
+  evnt.preventDefault();
+  const em = document.getElementById('auEmail').value.trim();
+  let code = null;
+  if(REMOTE.on){ const r = await api('/api/auth/request', {email:em}); if(r && r.devCode) code = r.devCode; }
+  openModal(`
+    <button class="modal-x" onclick="closeModal()">✕</button>
+    <div class="eyebrow"><span class="em">Demo inbox</span> · no real email in this build</div>
+    <h3>Check your inbox</h3>
+    <div class="sub">We sent <b>${em}</b> a six-digit code. In this demo the "email" arrives right here:</div>
+    <div class="dep-note" style="font-size:15px">📨 <span>Your Potluck code: <b style="font-size:23px;letter-spacing:.18em">${code||'482916'}</b></span></div>
+    <form onsubmit="return authVerify(event,'${em.replace(/'/g,'')}')">
+      <label>Enter the code</label>
+      <input id="auCode" inputmode="numeric" required placeholder="••••••" maxlength="6" style="letter-spacing:.3em;font-size:19px">
+      <div style="margin-top:20px"><button class="btn btn-ember btn-block">Verify &amp; sign in</button></div>
+    </form>`);
+  return false;
+}
+async function authVerify(evnt, em){
+  evnt.preventDefault();
+  const c = document.getElementById('auCode').value.trim();
+  if(!c){ toast('Enter the six digits.'); return false; }
+  if(REMOTE.on){
+    const r = await api('/api/auth/verify', {email:em, code:c});
+    if(r && r.token) setSession({token:r.token, email:r.email});
+    else { toast("That code didn't match — peek at the inbox card again."); return false; }
+  } else {
+    if(c==='482916') setSession({token:'local-'+Date.now().toString(36), email: em});
+    else { toast("That code didn't match — in offline mode it's 482916."); return false; }
+  }
+  return false;
+}
+function setSession(s){
+  session = s; LS.set('pk_session', s);
+  myBookings = null;
+  updateAccountUI();
+  closeModal();
+  toast('Signed in as '+s.email.split('@')[0]+' — your seats sync everywhere now.');
+  fetchMe();
+}
+function signOut(){
+  session = null; LS.set('pk_session', null);
+  myBookings = null;
+  updateAccountUI();
+  closeModal();
+  toast('Signed out. See you at the table.');
+  render(false);
+}
+function openAccount(){
+  const syncedCount = Array.isArray(myBookings) ? myBookings.filter(s=>!bookings.find(b=>b.code===s.code)).length : 0;
+  const mine = bookings.length + syncedCount;
+  openModal(`
+    <button class="modal-x" onclick="closeModal()">✕</button>
+    <div class="eyebrow"><span class="em">●</span>&nbsp; Account</div>
+    <h3>${session.email.split('@')[0]}</h3>
+    <div class="sub">${session.email} · ${mine} booking${mine===1?'':'s'} linked · ${member?'✦ First Chair':'free plan'}</div>
+    <div class="tk-actions">
+      <button class="btn btn-ink btn-block" onclick="closeModal(); go('#/tickets')">My seats</button>
+      ${member?'':'<button class="btn btn-gold btn-block" onclick="closeModal(); go(\'#/membership\')">Upgrade to First Chair</button>'}
+      <button class="btn btn-line btn-block" onclick="signOut()">Sign out</button>
+    </div>`);
+}
+async function fetchMe(){
+  if(!session || !REMOTE.on) return;
+  try{
+    const r = await fetch('/api/me?token='+encodeURIComponent(session.token));
+    if(r.ok){
+      const j = await r.json();
+      myBookings = j.bookings||[];
+      const fresh = j.offers||[];
+      const known = (Array.isArray(myOffers)?myOffers:[]).map(o=>o.hold).join(',');
+      const isNew = fresh.some(o=>!known.includes(o.hold));
+      myOffers = fresh;
+      if(isNew && !document.hidden){
+        const e = ev(fresh[0].eventId);
+        toast('🔔 A seat just opened for you at '+(e?e.title:'a table you wanted')+' — the 10-minute clock is running.');
+      }
+    }
+    else myBookings = [];
+    if(['#/tickets','#/explore'].includes(location.hash||'') || !location.hash) render(false);
+  }catch(e){ myBookings = []; }
+}
+
+/* ============================== QR + EMAIL ============================== */
+function qrHTML(code){
+  const rnd = mul32(hashSeed(code));
+  let cells = '';
+  for(let y=0;y<21;y++){
+    for(let x=0;x<21;x++){
+      const finder = (x<7&&y<7)||(x>13&&y<7)||(x<7&&y>13);
+      let on;
+      if(finder){
+        const fx = x>13?x-14:x, fy = y>13?y-14:y;
+        on = (fx===0||fx===6||fy===0||fy===6)||(fx>1&&fx<5&&fy>1&&fy<5);
+      } else on = rnd()>0.5;
+      cells += `<i class="${on?'on':''}"></i>`;
+    }
+  }
+  return `<div class="qr" aria-hidden="true">${cells}</div>`;
+}
+function emailHTML(e, b){
+  return `<div class="email-card">
+    <div class="ec-head"><b>🍲 POTLUCK</b><span>receipts@potluck.atx → ${b.email}</span></div>
+    <div class="ec-sub">You're in — ${e.title}, ${e.date} at ${e.time}</div>
+    <div class="ec-body">
+      <p>${b.name.split(' ')[0]}, it's official. Everything you need, nothing you don't:</p>
+      <div class="ec-addr"><span>📍 THE ADDRESS (your reveal)</span><b>${e.venue} · ${e.hood}</b></div>
+      <p>Seats ${(b.seats||[]).map(s=>'#'+(s+1)).join(' & ')||'—'} · party of ${b.qty} · paid $${b.total}${b.diet?(`<br>Noted for the kitchen: “${b.diet}”`):''}</p>
+      <p>Your code is <b>${b.code}</b> — the host validates it at the door. (There's a little square. It's very official.)</p>
+      <p style="color:var(--ink2);font-size:12.5px">48h+ cancellation = full refund, your seat rolls to the waitlist. No-shows donate $25 to the host. Flakes fund dinner.</p>
+    </div>
+  </div>`;
+}
+function emailPeek(id, code){
+  const e = ev(id); if(!e) return;
+  const b = bookings.find(x=>x.code===code)
+        || (Array.isArray(myBookings)?myBookings.find(x=>x.code===code):null)
+        || {code, seats:[], qty:1, total:'—', name:'Friend', email:'you@example.com'};
+  openModal(`
+    <button class="modal-x" onclick="closeModal()">✕</button>
+    <div class="eyebrow"><span class="em">Demo inbox</span></div>
+    <h3>The confirmation email</h3>
+    ${emailHTML(e, b)}
+    <div class="tk-actions"><button class="btn btn-line btn-block" onclick="closeModal()">Close</button></div>`);
+}
+
+/* ============================== DOOR CHECK-IN (HOST) ============================== */
+async function checkIn(){
+  const inp = document.getElementById('ciCode'), out = document.getElementById('ciOut');
+  const code = (inp.value||'').trim().toUpperCase();
+  if(!code){ toast('Type or scan a ticket code.'); return; }
+  const renderRes = (status, b)=>{
+    const b0 = b || {};
+    const seats = (b0.seats||[]).map(s=>'seat '+(s+1)).join(', ');
+    if(status==='ok') out.innerHTML = `<div class="dep-note" style="border-color:rgba(95,107,66,.5);background:rgba(95,107,66,.15)">✅ <span><b>${b0.name}</b> — party of ${b0.qty}${seats?' ('+seats+')':''}${b0.diet?` · “${b0.diet}”`:''}<br>Checked in just now. Feed them well.</span></div>`;
+    else if(status==='already') out.innerHTML = `<div class="dep-note" style="border-color:rgba(192,144,47,.55);background:rgba(192,144,47,.12)">⚠️ <span><b>${b0.name}</b> was already checked in${b0.checkedIn?(' at '+new Date(b0.checkedIn).toLocaleTimeString()):''}. Second plate?</span></div>`;
+    else out.innerHTML = `<div class="dep-note" style="border-color:rgba(196,80,43,.55);background:rgba(196,80,43,.1)">⛔ <span><b>${code}</b> is not a real ticket. Politely point them to the nearest actual restaurant.</span></div>`;
+  };
+  if(REMOTE.on){
+    const res = await api('/api/checkin', {code});
+    if(res && res.status) renderRes(res.status, res.booking);
+    else renderRes('bad', null);
+  } else {
+    const b = bookings.find(x=>x.code===code);
+    renderRes(b?'ok':'bad', b);
+  }
+}
+
+/* ============================== HOST BLAST ============================== */
+function sendBlast(){
+  const seg = document.getElementById('blastSeg');
+  const msg = document.getElementById('blastMsg');
+  if(!msg.value.trim()){ toast('Write something delicious first.'); return; }
+  const d = dashData();
+  const sizes = { waitlist: Math.max(1, d.wl), guests: Math.max(1, d.seatsSold), followers: 1204 + (follows.includes('DK')?1:0) };
+  const n = sizes[seg.value] || 12;
+  const out = document.getElementById('blastOut');
+  out.innerHTML = '<span style="color:var(--ink2)">Sending…</span>';
+  setTimeout(()=>{
+    const opens = Math.round(n*0.78), replies = Math.max(1, Math.round(n*0.06));
+    out.innerHTML = `✅ Sent to <b>${n}</b> → ${opens} opens in the first hour, ${replies} replies. You're a media company now.`;
+    toast('Blast sent to '+n+' people.');
+    track('blast', {seg: seg.value, n});
+  }, 900);
+}
+
+/* ============================== EXPORT / ICS ============================== */
+function exportGuests(){
+  const g = window.__guests || [];
+  const rows = [['name','seats','dietary']].concat(g.map(x=>[x.n,x.s,x.d]));
+  const csv = rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf8,'+encodeURIComponent(csv);
+  a.download = 'potluck-guest-list.csv';
+  a.click();
+  toast('Guest list exported — prep sheet, sorted.');
+}
+function downloadICS(id, code){
+  const e = ev(id);
+  const pad = n=>String(n).padStart(2,'0');
+  const start = e.iso;
+  const y=+start.slice(0,4), mo=+start.slice(4,6), d=+start.slice(6,8), h=+start.slice(9,11), mi=+start.slice(11,13);
+  const end = new Date(y,mo-1,d,h,mi); end.setTime(end.getTime()+e.durH*36e5);
+  const dtend = `${end.getFullYear()}${pad(end.getMonth()+1)}${pad(end.getDate())}T${pad(end.getHours())}${pad(end.getMinutes())}00`;
+  const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Potluck//EN','BEGIN:VEVENT',
+    'UID:'+code+'@potluck.atx','DTSTAMP:'+start,
+    'DTSTART:'+start,'DTEND:'+dtend,
+    'SUMMARY:'+e.title+' — hosted by '+e.host+' (Potluck '+code+')',
+    'LOCATION:'+e.venue+', '+e.hood+', Austin',
+    'DESCRIPTION:Ticket '+code+' · come hungry, phones for photos not feeds.',
+    'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/calendar;charset=utf8,'+encodeURIComponent(ics);
+  a.download = 'potluck-'+e.id+'.ics';
+  a.click();
+  toast('Calendar file downloaded. See you at the table.');
+}
+
+/* ============================== FORMS ============================== */
+function subscribe(evnt){
+  evnt.preventDefault();
+  const inp = evnt.target.querySelector('input');
+  const em = inp.value;
+  LS.set('pk_sub', {email: em, at: Date.now()});
+  track('subscribe', {email: em});
+  inp.value='';
+  toast("You're on the list. Sunday 6pm — set an alarm, the ramen goes in four minutes.");
+  if((location.hash||'#/')==='#/') render(false);
+  return false;
+}
+function hostApply(evnt){
+  evnt.preventDefault();
+  const apps = LS.get('pk_host', []); apps.push({at: Date.now()}); LS.set('pk_host', apps);
+  track('host-apply', {});
+  document.getElementById('hostFormCard').innerHTML = `
+    <div class="form-ok">
+      <div class="wm">🔥</div>
+      <h3 style="font-family:'Fraunces',serif;font-size:26px;font-weight:600">Application in the oven.</h3>
+      <p style="font-size:14.5px;color:var(--ink2);margin-top:10px;line-height:1.6">We read every one within a week. If the concept sings, we come taste — then your first table goes in the Sunday drop with 90 days of 0% fees.</p>
+    </div>`;
+  toast("Host application received. We'll bring forks.");
+  return false;
+}
+
+/* ============================== CALC / CLOCK ============================== */
+function wireCalc(){
+  const s=document.getElementById('cSeats'), p=document.getElementById('cPrice'), f=document.getElementById('cFreq');
+  if(!s) return;
+  const upd = ()=>{
+    document.getElementById('cSeatsV').textContent = s.value;
+    document.getElementById('cPriceV').textContent = '$'+p.value;
+    document.getElementById('cFreqV').textContent = f.value;
+    const gross = s.value*p.value*f.value;
+    document.getElementById('cOut').textContent = '$'+Math.round(gross*0.88).toLocaleString();
+  };
+  [s,p,f].forEach(el=>el.addEventListener('input', upd));
+}
+let clockTimer=null;
+function wireClocks(){
+  if(clockTimer) clearInterval(clockTimer);
+  clockTimer = setInterval(()=>{ document.querySelectorAll('#dropClock').forEach(el=>el.textContent=dropCountdown()); document.querySelectorAll('.offer-exp').forEach(el=>{ el.textContent = fmtOffer(Number(el.dataset.exp)||0); }); }, 1000);
+}
+
+/* ============================== ROUTER ============================== */
+function setFilter(f){ filter=f; render(false); }
+function render(scroll=true){
+  const h = location.hash || '#/';
+  const app = document.getElementById('app');
+  let html;
+  if(h.startsWith('#/event/')) html = vEvent(h.split('/')[2]);
+  else if(h==='#/explore') html = vExplore();
+  else if(h==='#/host') html = vHost();
+  else if(h==='#/dashboard') html = vDash();
+  else if(h==='#/tickets') html = vTickets();
+  else if(h==='#/membership') html = vMembership();
+  else html = vHome();
+  app.innerHTML = html;
+  if(scroll) scrollTop();
+  wireCalc(); wireClocks();
+  const io = new IntersectionObserver(es=>es.forEach(x=>{ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target)} }), {threshold:.12});
+  document.querySelectorAll('.reveal:not(.in)').forEach(el=>io.observe(el));
+}
+window.addEventListener('hashchange', ()=>render());
+function init(){ render(); updateTicketPill(); updateMemberUI(); updateAccountUI(); bootRemote(); }
+init();
+</script>
+</body>
+</html>
