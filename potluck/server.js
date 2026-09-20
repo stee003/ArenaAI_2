@@ -38,12 +38,14 @@ function seed(){
   for(const id of Object.keys(BASE_TOTALS)){
     seats[id] = { left: BASE_LEFT[id], taken: simulatedTaken(id, BASE_TOTALS[id], BASE_LEFT[id]) };
   }
-  return { seats, customEvents: [], bookings: [], waitlist: [], track: [] };
+  return { seats, customEvents: [], bookings: [], waitlist: [], track: [], sessions: {}, otps: {} };
 }
 
 let db;
 try { db = JSON.parse(fs.readFileSync(DATA, 'utf8')); if(!db.seats) throw 0; }
 catch(e){ db = seed(); persist(); }
+db.sessions = db.sessions || {};
+db.otps = db.otps || {};
 function persist(){ try{ fs.writeFileSync(DATA, JSON.stringify(db)); }catch(e){} }
 
 function totals(id){
@@ -83,6 +85,13 @@ const server = http.createServer(async (req, res)=>{
     const send = (code,obj)=>{ res.writeHead(code,{'Content-Type':'application/json','Cache-Control':'no-store'}); res.end(JSON.stringify(obj)); };
 
     if(req.method==='GET' && u.pathname==='/api/state') return send(200, publicState());
+    if(req.method==='GET' && u.pathname==='/api/me'){
+      const token = u.searchParams.get('token')||'';
+      const sess = db.sessions[token];
+      if(!sess) return send(401,{error:'bad token'});
+      const mine = db.bookings.filter(b=>b.user===sess.email);
+      return send(200,{ email: sess.email, bookings: mine });
+    }
     if(req.method!=='POST') return send(405,{error:'method'});
 
     const body = await readBody(req);
@@ -101,9 +110,11 @@ const server = http.createServer(async (req, res)=>{
       st.taken = st.taken.concat(reqSeats);
       st.left -= reqSeats.length;
       const code = 'PK-'+Math.random().toString(36).slice(2,6).toUpperCase();
+      const sessUser = body.authToken && db.sessions[body.authToken] ? db.sessions[body.authToken].email : null;
       db.bookings.push({ code, eventId, seats:reqSeats, qty:reqSeats.length,
         name:String(name||'').slice(0,80), email:String(email||'').slice(0,120),
-        diet:String(diet||'').slice(0,200), at:Date.now() });
+        diet:String(diet||'').slice(0,200), total:Number(body.total)||null,
+        user: sessUser, at:Date.now() });
       persist();
       return send(200,{ code, left: st.left, taken: st.taken });
     }
@@ -145,6 +156,36 @@ const server = http.createServer(async (req, res)=>{
       db.track.push({ type:String(body.type||'?').slice(0,40), payload:body.payload||null, at:Date.now() });
       persist();
       return send(200,{ok:true});
+    }
+
+    if(u.pathname==='/api/auth/request'){
+      const email = String(body.email||'').trim().toLowerCase();
+      if(!email || !email.includes('@')) return send(400,{error:'bad email'});
+      const code = ''+Math.floor(100000+Math.random()*900000);
+      db.otps[email] = { code, exp: Date.now()+10*60*1000 };
+      persist();
+      // demo build: can't send real email, so the one-time code returns in the response
+      return send(200,{ ok:true, devCode: code });
+    }
+
+    if(u.pathname==='/api/auth/verify'){
+      const email = String(body.email||'').trim().toLowerCase();
+      const o = db.otps[email];
+      if(!o || o.code!==String(body.code||'').trim() || o.exp<Date.now()) return send(401,{error:'bad code'});
+      const token = 'tk_'+Math.random().toString(36).slice(2)+Date.now().toString(36);
+      db.sessions[token] = { email, at: Date.now() };
+      delete db.otps[email];
+      persist();
+      return send(200,{ ok:true, token, email });
+    }
+
+    if(u.pathname==='/api/checkin'){
+      const code = String(body.code||'').trim().toUpperCase();
+      const b = db.bookings.find(x=>x.code===code);
+      if(!b) return send(404,{error:'not a valid ticket'});
+      if(b.checkedIn) return send(200,{ status:'already', booking: b });
+      b.checkedIn = Date.now(); persist();
+      return send(200,{ status:'ok', booking: b });
     }
 
     return send(404,{error:'unknown endpoint'});
